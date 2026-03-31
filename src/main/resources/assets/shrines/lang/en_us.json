@@ -1,5 +1,8 @@
 {
   "itemGroup.shrines": "Shrines",
 
-  "item.shrines.example": "Example"
+  "item.shrines.example": "Example",
+
+  "block.shrines.sheikahstone": "Sheikahstone",
+  "block.shrines.sheikahstone_swirls" :"Sheikahstone Swirls"
 }

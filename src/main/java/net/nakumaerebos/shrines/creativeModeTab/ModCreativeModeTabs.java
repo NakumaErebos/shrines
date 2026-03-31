@@ -1,9 +1,10 @@
-package net.nakumaerebos.shrines.CreativeModeTab;
+package net.nakumaerebos.shrines.creativeModeTab;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.nakumaerebos.shrines.Shrines;
+import net.nakumaerebos.shrines.block.ModBlocks;
 import net.nakumaerebos.shrines.item.ModItems;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -17,7 +18,12 @@ public class ModCreativeModeTabs {
             .withTabsBefore(net.minecraft.world.item.CreativeModeTabs.COMBAT)
             .icon(ModItems.EXAMPLE::toStack)
             .displayItems((parameters, output) -> {
-                output.accept(ModItems.EXAMPLE);
+                ModItems.ITEMS.getEntries().forEach(item -> {
+                    output.accept(item.get());
+                });
+                ModBlocks.BLOCKS.getEntries().forEach(block -> {
+                    output.accept(block.get());
+                });
             }).build());
 
     public static void register(IEventBus eventBus) {
