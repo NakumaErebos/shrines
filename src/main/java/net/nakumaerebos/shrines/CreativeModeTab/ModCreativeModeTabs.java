@@ -1,0 +1,26 @@
+package net.nakumaerebos.shrines.CreativeModeTab;
+
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
+import net.nakumaerebos.shrines.Shrines;
+import net.nakumaerebos.shrines.item.ModItems;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+public class ModCreativeModeTabs {
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Shrines.MOD_ID);
+
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> SHRINES_TAB = CREATIVE_MODE_TABS.register("shrines", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.shrines"))
+            .withTabsBefore(net.minecraft.world.item.CreativeModeTabs.COMBAT)
+            .icon(ModItems.EXAMPLE::toStack)
+            .displayItems((parameters, output) -> {
+                output.accept(ModItems.EXAMPLE);
+            }).build());
+
+    public static void register(IEventBus eventBus) {
+        CREATIVE_MODE_TABS.register(eventBus);
+    }
+}
