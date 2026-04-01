@@ -1,7 +1,16 @@
 {
   "variants": {
-    "": {
-      "model": "shrines:block/sheikahstone"
+    "state=0": {
+      "model": "shrines:block/sheikahstone_0"
+    },
+    "state=1": {
+      "model": "shrines:block/sheikahstone_1"
+    },
+    "state=2": {
+      "model": "shrines:block/sheikahstone_2"
+    },
+    "state=3": {
+      "model": "shrines:block/sheikahstone_3"
     }
   }
 }

@@ -4,5 +4,8 @@
   "item.shrines.example": "Example",
 
   "block.shrines.sheikahstone": "Sheikahstone",
-  "block.shrines.sheikahstone_swirls" :"Sheikahstone Swirls"
+  "block.shrines.dark_sheikahstone": "Dark Sheikahstone",
+  "block.shrines.sheikahstone_swirls" :"Sheikahstone Swirls",
+  "block.shrines.starry_darkstone": "Starry Darkstone"
+
 }
