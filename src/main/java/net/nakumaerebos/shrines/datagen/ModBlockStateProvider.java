@@ -2,7 +2,6 @@ package net.nakumaerebos.shrines.datagen;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.nakumaerebos.shrines.Shrines;
 import net.nakumaerebos.shrines.block.ModBlocks;
@@ -92,7 +91,4 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlockWithItem(deferredBlock.get(), cubeAll(deferredBlock.get()));
     }
 
-    private String name(Block block) {
-        return block.asItem().toString();
-    }
 }

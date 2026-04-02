@@ -1,6 +1,7 @@
 package net.nakumaerebos.shrines;
 
 import net.nakumaerebos.shrines.block.ModBlocks;
+import net.nakumaerebos.shrines.block.entity.ModBlockEntities;
 import net.nakumaerebos.shrines.creativeModeTab.ModCreativeModeTabs;
 import net.nakumaerebos.shrines.item.ModItems;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -26,6 +27,7 @@ public class Shrines {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);

@@ -6,6 +6,8 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.nakumaerebos.shrines.Shrines;
 import net.nakumaerebos.shrines.block.custom.SheikahStateBlock;
+import net.nakumaerebos.shrines.block.custom.ShrineDoorBlock;
+import net.nakumaerebos.shrines.block.custom.ShrineDoorDummyBlock;
 import net.nakumaerebos.shrines.item.ModItems;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -57,6 +59,12 @@ public class ModBlocks {
                         default -> 0;
                     }).noLootTable()
             ));
+
+    public static final DeferredBlock<Block> SHRINE_DOOR = registerBlock("shrine_door",
+            () -> new ShrineDoorBlock(BlockBehaviour.Properties.of().noOcclusion()));
+
+    public static final DeferredBlock<Block> SHRINE_DOOR_DUMMY = registerBlock("shrine_door_dummy",
+            () -> new ShrineDoorDummyBlock(BlockBehaviour.Properties.of().noOcclusion().noCollission().dynamicShape()));
 
     public static final DeferredBlock<Block> DARKSTONE = registerBlock("darkstone",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.BEDROCK)));

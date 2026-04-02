@@ -29,13 +29,22 @@ ${mod_description}
 
 # --- HIER IST DIE NEUE ABHÄNGIGKEIT ZU PARAGLIDER ---
 [[dependencies.${mod_id}]]
-    # Die interne Mod-ID von Paraglider ist "paraglider"
     modId="paraglider"
-    # Auf "required" setzen, wenn deine Mod ohne Paraglider nicht funktionieren kann
     type="required"
-    # Ein leerer Bereich oder "[0,)" akzeptiert jede Version.
-    # Da du 21.1.5 nutzt, wäre "[21.1.5,)" sinnvoll für "mindestens diese Version".
     versionRange="[21.1.5,)"
-    # WICHTIG: Deine Mod muss NACH Paraglider laden, damit du deren Funktionen nutzen kannst
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="geckolib"
+    type="required"
+    versionRange="[4.8.4,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="xaeroworldmap"
+    type="optional"
+    versionRange="[1.40,)"
     ordering="AFTER"
     side="BOTH"

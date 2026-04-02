@@ -10,7 +10,6 @@ import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 
 public class SheikahStateBlock extends Block {
-    // Wir definieren eine IntegerProperty von 0 bis 3
     public static final IntegerProperty STATE = IntegerProperty.create("state", 0, 3);
 
     public static final MapCodec<SheikahStateBlock> CODEC = simpleCodec(SheikahStateBlock::new);
