@@ -1,0 +1,15 @@
+{
+  "name": "shrines:exit_elevator_pillar",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "shrines:exit_elevator_pillar",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

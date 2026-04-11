@@ -1,0 +1,6 @@
+{
+  "loader": "neoforge:empty",
+  "textures": {
+    "particle": "shrines:block/holy_shimmer"
+  }
+}

@@ -16,14 +16,14 @@ public class ModCreativeModeTabs {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> SHRINES_TAB = CREATIVE_MODE_TABS.register("shrines", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.shrines"))
             .withTabsBefore(net.minecraft.world.item.CreativeModeTabs.COMBAT)
-            .icon(ModItems.EXAMPLE::toStack)
+            .icon(ModItems.SHEIKAHSLATE::toStack)
             .displayItems((parameters, output) -> {
                 ModItems.ITEMS.getEntries().forEach(item -> {
                     output.accept(item.get());
                 });
-                ModBlocks.BLOCKS.getEntries().forEach(block -> {
-                    output.accept(block.get());
-                });
+                ModBlocks.BLOCKS.getEntries().stream()
+                        .filter(block -> block != ModBlocks.SHRINE_DOOR_DUMMY)
+                        .forEach(block -> output.accept(block.get()));
             }).build());
 
     public static void register(IEventBus eventBus) {

@@ -6,6 +6,7 @@ import net.nakumaerebos.shrines.block.entity.ShrineDoorBlockEntity;
 import software.bernie.geckolib.model.GeoModel;
 
 public class ShrineDoorModel extends GeoModel<ShrineDoorBlockEntity> {
+
     @Override
     public ResourceLocation getModelResource(ShrineDoorBlockEntity animatable) {
         return ResourceLocation.fromNamespaceAndPath(Shrines.MOD_ID, "geo/shrine_door.geo.json");

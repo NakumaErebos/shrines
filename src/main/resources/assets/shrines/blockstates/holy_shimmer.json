@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "activated=false,facing=north,is_edge=false": { "model": "shrines:block/holy_shimmer_dummy" },
+    "activated=false,facing=south,is_edge=false": { "model": "shrines:block/holy_shimmer_dummy", "y": 180 },
+    "activated=false,facing=east,is_edge=false":  { "model": "shrines:block/holy_shimmer_dummy", "y": 90 },
+    "activated=false,facing=west,is_edge=false":  { "model": "shrines:block/holy_shimmer_dummy", "y": 270 },
+
+    "activated=false,facing=north,is_edge=true":  { "model": "shrines:block/holy_shimmer_dummy" },
+    "activated=false,facing=south,is_edge=true":  { "model": "shrines:block/holy_shimmer_dummy", "y": 180 },
+    "activated=false,facing=east,is_edge=true":   { "model": "shrines:block/holy_shimmer_dummy", "y": 90 },
+    "activated=false,facing=west,is_edge=true":   { "model": "shrines:block/holy_shimmer_dummy", "y": 270 },
+
+    "activated=true,facing=north,is_edge=false":  { "model": "shrines:block/holy_shimmer_dummy" },
+    "activated=true,facing=south,is_edge=false":  { "model": "shrines:block/holy_shimmer_dummy", "y": 180 },
+    "activated=true,facing=east,is_edge=false":   { "model": "shrines:block/holy_shimmer_dummy", "y": 90 },
+    "activated=true,facing=west,is_edge=false":   { "model": "shrines:block/holy_shimmer_dummy", "y": 270 },
+
+    "activated=true,facing=north,is_edge=true":   { "model": "shrines:block/holy_shimmer_dummy" },
+    "activated=true,facing=south,is_edge=true":   { "model": "shrines:block/holy_shimmer_dummy", "y": 180 },
+    "activated=true,facing=east,is_edge=true":    { "model": "shrines:block/holy_shimmer_dummy", "y": 90 },
+    "activated=true,facing=west,is_edge=true":    { "model": "shrines:block/holy_shimmer_dummy", "y": 270 }
+  }
+}

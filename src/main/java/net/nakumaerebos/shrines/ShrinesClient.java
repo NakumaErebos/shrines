@@ -2,6 +2,8 @@ package net.nakumaerebos.shrines;
 
 import net.minecraft.client.Minecraft;
 import net.nakumaerebos.shrines.block.entity.ModBlockEntities;
+import net.nakumaerebos.shrines.client.HolyShimmerRenderer;
+import net.nakumaerebos.shrines.client.SheikahLecternRenderer;
 import net.nakumaerebos.shrines.client.ShrineDoorRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -35,5 +37,7 @@ public class ShrinesClient {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntities.SHRINE_DOOR_BE.get(), ShrineDoorRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.SHEIKAH_LECTERN_BE.get(), SheikahLecternRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.HOLY_SHIMMER.get(), HolyShimmerRenderer::new);
     }
 }

@@ -3,25 +3,14 @@
 	"animations": {
 		"animation.shrine_door.open": {
 			"loop": "hold_on_last_frame",
-			"animation_length": 2.4583,
+			"animation_length": 1.9167,
 			"bones": {
-				"rod_9": {
-					"rotation": {
-						"1.1667": {
-							"vector": [0, 0, 0]
-						},
-						"2.4167": {
-							"vector": [0, 90, 0],
-							"easing": "easeInQuad"
-						}
-					}
-				},
 				"rod_1": {
 					"rotation": {
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"1.25": {
+						"1.9167": {
 							"vector": [0, -90, 0],
 							"easing": "easeInQuad"
 						}
@@ -32,7 +21,7 @@
 						"0.1667": {
 							"vector": [0, 0, 0]
 						},
-						"1.4167": {
+						"1.9167": {
 							"vector": [0, 90, 0],
 							"easing": "easeInQuad"
 						}
@@ -43,7 +32,7 @@
 						"0.3333": {
 							"vector": [0, 0, 0]
 						},
-						"1.5833": {
+						"1.9167": {
 							"vector": [0, -90, 0],
 							"easing": "easeInQuad"
 						}
@@ -54,7 +43,7 @@
 						"0.5": {
 							"vector": [0, 0, 0]
 						},
-						"1.75": {
+						"1.9167": {
 							"vector": [0, 90, 0],
 							"easing": "easeInQuad"
 						}
@@ -76,7 +65,7 @@
 						"0.8333": {
 							"vector": [0, 0, 0]
 						},
-						"2.0833": {
+						"1.9167": {
 							"vector": [0, 90, 0],
 							"easing": "easeInQuad"
 						}
@@ -87,7 +76,7 @@
 						"1.0": {
 							"vector": [0, 0, 0]
 						},
-						"2.25": {
+						"1.9167": {
 							"vector": [0, -90, 0],
 							"easing": "easeInQuad"
 						}
@@ -98,8 +87,19 @@
 						"1.1667": {
 							"vector": [0, 0, 0]
 						},
-						"2.4167": {
+						"1.9167": {
 							"vector": [0, -90, 0],
+							"easing": "easeInQuad"
+						}
+					}
+				},
+				"rod_9": {
+					"rotation": {
+						"1.1667": {
+							"vector": [0, 0, 0]
+						},
+						"1.9167": {
+							"vector": [0, 90, 0],
 							"easing": "easeInQuad"
 						}
 					}

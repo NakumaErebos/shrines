@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "shrines:block/elevator_platform" },
+    "facing=south": { "model": "shrines:block/elevator_platform", "y": 180 },
+    "facing=west": { "model": "shrines:block/elevator_platform", "y": 270 },
+    "facing=east": { "model": "shrines:block/elevator_platform", "y": 90 }
+  }
+}

@@ -1,11 +1,17 @@
 package net.nakumaerebos.shrines;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.nakumaerebos.shrines.block.ModBlocks;
 import net.nakumaerebos.shrines.block.entity.ModBlockEntities;
 import net.nakumaerebos.shrines.creativeModeTab.ModCreativeModeTabs;
 import net.nakumaerebos.shrines.item.ModItems;
+import net.nakumaerebos.shrines.sound.ModSounds;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -28,6 +34,7 @@ public class Shrines {
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModBlockEntities.register(modEventBus);
+        ModSounds.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
@@ -51,5 +58,34 @@ public class Shrines {
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(PlayerTickEvent.Post event) {
+
+        Player player = event.getEntity();
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            ResourceLocation dimLocation = serverPlayer.level().dimension().location();
+            GameType currentMode = serverPlayer.gameMode.getGameModeForPlayer();
+
+            // Prüfung auf deine Dimension
+            if (dimLocation.getPath().equals("shrine_interior")) {
+
+                // Wechsel von Survival zu Adventure
+                if (currentMode == GameType.SURVIVAL) {
+                    serverPlayer.setGameMode(GameType.ADVENTURE);
+                }
+
+                // Elytren-Stopp
+                if (serverPlayer.isFallFlying()) {
+                    serverPlayer.stopFallFlying();
+                }
+            }
+            // Rückwechsel beim Verlassen
+            else if (currentMode == GameType.ADVENTURE) {
+                serverPlayer.setGameMode(GameType.SURVIVAL);
+            }
+        }
     }
 }

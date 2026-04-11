@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "facing=north,state=0": { "model": "shrines:block/shrine_symbol_block_0" },
+    "facing=east,state=0":  { "model": "shrines:block/shrine_symbol_block_0", "y": 90 },
+    "facing=south,state=0": { "model": "shrines:block/shrine_symbol_block_0", "y": 180 },
+    "facing=west,state=0":  { "model": "shrines:block/shrine_symbol_block_0", "y": 270 },
+
+    "facing=north,state=1": { "model": "shrines:block/shrine_symbol_block_1" },
+    "facing=east,state=1":  { "model": "shrines:block/shrine_symbol_block_1", "y": 90 },
+    "facing=south,state=1": { "model": "shrines:block/shrine_symbol_block_1", "y": 180 },
+    "facing=west,state=1":  { "model": "shrines:block/shrine_symbol_block_1", "y": 270 },
+
+    "facing=north,state=2": { "model": "shrines:block/shrine_symbol_block_2" },
+    "facing=east,state=2":  { "model": "shrines:block/shrine_symbol_block_2", "y": 90 },
+    "facing=south,state=2": { "model": "shrines:block/shrine_symbol_block_2", "y": 180 },
+    "facing=west,state=2":  { "model": "shrines:block/shrine_symbol_block_2", "y": 270 },
+
+    "facing=north,state=3": { "model": "shrines:block/shrine_symbol_block_3" },
+    "facing=east,state=3":  { "model": "shrines:block/shrine_symbol_block_3", "y": 90 },
+    "facing=south,state=3": { "model": "shrines:block/shrine_symbol_block_3", "y": 180 },
+    "facing=west,state=3":  { "model": "shrines:block/shrine_symbol_block_3", "y": 270 }
+  }
+}

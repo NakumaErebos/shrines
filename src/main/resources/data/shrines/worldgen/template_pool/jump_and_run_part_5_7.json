@@ -1,0 +1,32 @@
+{
+  "name": "shrines:jump_and_run_part_5_7",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "shrines:jump_and_run_part_5",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "shrines:jump_and_run_part_6",
+        "processors": "minecraft:empty"
+      }
+    },{
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "shrines:jump_and_run_part_7",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

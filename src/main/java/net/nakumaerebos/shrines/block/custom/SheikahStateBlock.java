@@ -21,7 +21,6 @@ public class SheikahStateBlock extends Block {
 
     public SheikahStateBlock(BlockBehaviour.Properties properties) {
         super(properties);
-        // Standardmäßig auf 0 setzen
         this.registerDefaultState(this.stateDefinition.any().setValue(STATE, 0));
     }
 

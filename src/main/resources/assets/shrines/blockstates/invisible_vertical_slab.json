@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "shrines:block/invisible_vertical_slab" },
+    "facing=south": { "model": "shrines:block/invisible_vertical_slab" },
+    "facing=east": { "model": "shrines:block/invisible_vertical_slab" },
+    "facing=west": { "model": "shrines:block/invisible_vertical_slab" }
+  }
+}

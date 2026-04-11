@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "activated=false,facing=north": { "model": "shrines:block/sheikah_lectern_dummy" },
+    "activated=false,facing=south": { "model": "shrines:block/sheikah_lectern_dummy", "y": 180 },
+    "activated=false,facing=east": { "model": "shrines:block/sheikah_lectern_dummy", "y": 90 },
+    "activated=false,facing=west": { "model": "shrines:block/sheikah_lectern_dummy", "y": 270 },
+    "activated=true,facing=north": { "model": "shrines:block/sheikah_lectern_dummy" },
+    "activated=true,facing=south": { "model": "shrines:block/sheikah_lectern_dummy", "y": 180 },
+    "activated=true,facing=east": { "model": "shrines:block/sheikah_lectern_dummy", "y": 90 },
+    "activated=true,facing=west": { "model": "shrines:block/sheikah_lectern_dummy", "y": 270 }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "shrine_door_open": {
+    "subtitle": "sounds.shrines.shrine_door_open",
+    "sounds": [
+      "shrines:shrine_door_open"
+    ]
+  },
+  "authentication_bing": {
+    "subtitle": "sounds.shrines.authentication_bing",
+    "sounds": [
+      "shrines:authentication_bing"
+    ]
+  },
+  "holy_shimmer_shatter": {
+    "subtitle": "sounds.shrines.holy_shimmer_shatter",
+    "sounds": [
+      "shrines:holy_shimmer_shatter"
+    ]
+  }
+}

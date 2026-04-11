@@ -13,6 +13,6 @@ public class ModItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        basicItem(ModItems.EXAMPLE.get());
+//        basicItem(ModItems.SHEIKAHSLATE.get());
     }
 }

@@ -1,0 +1,24 @@
+{
+  "name": "shrines:shrine_block_4_top",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "shrines:shrine_block_4_top_2",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "shrines:shrine_block_4_top_1",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

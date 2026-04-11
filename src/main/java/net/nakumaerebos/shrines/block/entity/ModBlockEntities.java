@@ -17,6 +17,18 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("shrine_door_be", () -> BlockEntityType.Builder.of(
                     ShrineDoorBlockEntity::new, ModBlocks.SHRINE_DOOR.get()).build(null));
 
+    public static final Supplier<BlockEntityType<SheikahLecternBlockEntity>> SHEIKAH_LECTERN_BE =
+            BLOCK_ENTITIES.register("sheikah_lectern_be", () ->
+                    BlockEntityType.Builder.of(
+                            SheikahLecternBlockEntity::new,
+                            ModBlocks.SHEIKAH_LECTERN.get() // Dein Block-Objekt
+                    ).build(null)
+            );
+
+    public static final Supplier<BlockEntityType<HolyShimmerEntity>> HOLY_SHIMMER =
+            BLOCK_ENTITIES.register("holy_shimmer",
+                    () -> BlockEntityType.Builder.of(HolyShimmerEntity::new, ModBlocks.HOLY_SHIMMER.get()).build(null));
+
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);
     }

@@ -6,15 +6,32 @@
 				"identifier": "geometry.shrine_door",
 				"texture_width": 128,
 				"texture_height": 128,
-				"visible_bounds_width": 5,
-				"visible_bounds_height": 4.5,
-				"visible_bounds_offset": [0, 1.75, 0]
+				"visible_bounds_width": 6,
+				"visible_bounds_height": 5,
+				"visible_bounds_offset": [0, 1.5, 0]
 			},
 			"bones": [
+				{
+					"name": "bone",
+					"pivot": [23, 6, 24],
+					"cubes": [
+						{"origin": [16, 0, 16], "size": [8, 12, 16], "uv": [0, 44]},
+						{"origin": [16, 18, 16], "size": [8, 6, 16], "uv": [0, 44]},
+						{"origin": [16, 30, 16], "size": [8, 6, 16], "uv": [0, 44]},
+						{"origin": [16, 42, 16], "size": [8, 6, 16], "uv": [0, 44]},
+						{"origin": [-24, 36, 16], "size": [8, 6, 16], "uv": [0, 44]},
+						{"origin": [-24, 24, 16], "size": [8, 6, 16], "uv": [0, 44]},
+						{"origin": [-24, 12, 16], "size": [8, 6, 16], "uv": [0, 44]},
+						{"origin": [-24, 0, 16], "size": [8, 6, 16], "uv": [0, 44]},
+						{"origin": [16, 0, 32], "size": [8, 48, 8], "uv": [0, 44]},
+						{"origin": [-24, 0, 32], "size": [8, 48, 8], "uv": [0, 44]}
+					]
+				},
 				{
 					"name": "constant",
 					"pivot": [0, 0, 16],
 					"cubes": [
+						{"origin": [16, 6, -8], "size": [8, 6, 24], "uv": [0, 14]},
 						{"origin": [16, 6, -8], "size": [8, 6, 24], "uv": [0, 14]},
 						{"origin": [16, 18, -8], "size": [8, 6, 24], "uv": [0, 14]},
 						{"origin": [16, 30, -8], "size": [8, 6, 24], "uv": [0, 14]},

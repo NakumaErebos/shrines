@@ -1,6 +1,7 @@
 package net.nakumaerebos.shrines.block.custom;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -8,101 +9,98 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ShrineDoorDummyBlock extends Block {
+
+    public static final IntegerProperty OFFSET_X = IntegerProperty.create("offset_x", 0, 2);
+    public static final IntegerProperty OFFSET_Y = IntegerProperty.create("offset_y", 0, 2);
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+
     public ShrineDoorDummyBlock(Properties properties) {
         super(properties);
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(OFFSET_X, 0)
+                .setValue(OFFSET_Y, 0)
+                .setValue(FACING, Direction.NORTH));
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
-        // Wir suchen den Hauptblock. Das erfordert eine Logik, um die "Mutter" zu finden.
-        // Ein einfacher Weg: Wir speichern die Position des Hauptblocks in einer BlockEntity oder
-        // wir suchen in einem Radius von 2 Blöcken nach dem ShrineDoorBlock.
-        BlockPos mainPos = findMainBlock(level, pos);
-        if (mainPos != null) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+
+        BlockPos mainPos = findMainBlock(state, pos);
+        BlockState mainState = level.getBlockState(mainPos);
+
+        if (!(mainState.getBlock() instanceof ShrineDoorBlock)) return Shapes.block();
+        if (!mainState.getValue(ShrineDoorBlock.OPEN)) return Shapes.block();
+
+        int offsetX = state.getValue(OFFSET_X) - 1;
+        Direction facing = state.getValue(FACING);
+
+        if (offsetX == 0) return Shapes.empty();
+
+        return switch (facing) {
+            case NORTH -> offsetX == -1 ? Block.box(0, 0, 0, 8, 16, 16) : Block.box(8, 0, 0, 16, 16, 16);
+            case SOUTH -> offsetX == -1 ? Block.box(8, 0, 0, 16, 16, 16) : Block.box(0, 0, 0, 8, 16, 16);
+            case WEST -> offsetX == -1 ? Block.box(0, 0, 8, 16, 16, 16) : Block.box(0, 0, 0, 16, 16, 8);
+            case EAST -> offsetX == -1 ? Block.box(0, 0, 0, 16, 16, 8) : Block.box(0, 0, 8, 16, 16, 16);
+            default -> Shapes.block();
+        };
+    }
+
+    private BlockPos findMainBlock(BlockState state, BlockPos pos) {
+        int r = state.getValue(OFFSET_X) - 1;
+        int y = state.getValue(OFFSET_Y);
+        Direction facing = state.getValue(FACING);
+        Direction left = facing.getCounterClockWise();
+
+        return pos.relative(left, r).below(y);
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        BlockPos mainPos = findMainBlock(state, pos);
+
+        if (level.getBlockState(mainPos).getBlock() instanceof ShrineDoorBlock) {
             return level.getBlockState(mainPos).useWithoutItem(level, player, hitResult.withPosition(mainPos));
         }
+
         return InteractionResult.PASS;
     }
 
     @Override
-    public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        // Wenn ein Dummy zerstört wird, sollte das ganze Tor verschwinden
-        BlockPos mainPos = findMainBlock(level, pos);
-        if (mainPos != null && !newState.is(state.getBlock())) {
-            level.destroyBlock(mainPos, false);
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!newState.is(state.getBlock())) {
+            BlockPos mainPos = findMainBlock(state, pos);
+
+            if (level.getBlockState(mainPos).getBlock() instanceof ShrineDoorBlock) {
+                level.destroyBlock(mainPos, false);
+            }
         }
+
         super.onRemove(state, level, pos, newState, isMoving);
     }
 
-    @Nullable
-    private BlockPos findMainBlock(Level level, BlockPos pos) {
-        // Suche im 3x3x3 Bereich nach dem ShrineDoorBlock
-        for (BlockPos p : BlockPos.betweenClosed(pos.offset(-2, -2, -2), pos.offset(2, 2, 2))) {
-            if (level.getBlockState(p).getBlock() instanceof ShrineDoorBlock) return p.immutable();
-        }
-        return null;
-    }
-
-    // Im ShrineDoorDummyBlock
     @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        // 1. Finde den Hauptblock über das BlockGetter-Interface
-        BlockPos mainPos = findMainBlock(level, pos);
-        if (mainPos == null) return Shapes.block();
-
-        // BlockGetter erlaubt uns getBlockState aufzurufen
-        BlockState mainState = level.getBlockState(mainPos);
-
-        // Sicherheitshalber prüfen, ob der gefundene Block wirklich unser Tor ist
-        if (!(mainState.getBlock() instanceof ShrineDoorBlock)) return Shapes.block();
-
-        boolean isOpen = mainState.getValue(ShrineDoorBlock.OPEN);
-
-        if (!isOpen) return Shapes.block(); // Tor zu → überall volle Kollision
-
-        // 2. Wenn offen: Nur die äußeren Pfosten (8 Pixel) haben Kollision
-        int xOffset = pos.getX() - mainPos.getX();
-
-        if (xOffset == -1) { // Linke Spalte des 3x3 Verbunds
-            return Block.box(0, 0, 0, 8, 16, 16);
-        } else if (xOffset == 1) { // Rechte Spalte des 3x3 Verbunds
-            return Block.box(8, 0, 0, 16, 16, 16);
-        }
-
-        // Mittlere Spalte (xOffset == 0) ist frei begehbar
-        return Shapes.empty();
-    }
-
-    /**
-     * Geänderte Hilfsmethode: Nutzt jetzt BlockGetter statt Level.
-     */
-    @Nullable
-    private BlockPos findMainBlock(BlockGetter level, BlockPos pos) {
-        // Wir suchen im 3x3x3 Bereich nach dem ShrineDoorBlock
-        for (BlockPos p : BlockPos.betweenClosed(pos.offset(-2, -2, -2), pos.offset(2, 2, 2))) {
-            if (level.getBlockState(p).getBlock() instanceof ShrineDoorBlock) {
-                return p.immutable();
-            }
-        }
-        return null;
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(OFFSET_X, OFFSET_Y, FACING);
     }
 
     @Override
-    protected @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
-        return RenderShape.INVISIBLE; // Der Dummy soll nicht gerendert werden
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.INVISIBLE;
     }
 
     @Override
-    public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        // Leitet die physische Kollision direkt an deine getShape-Logik weiter
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return this.getShape(state, level, pos, context);
     }
 }
