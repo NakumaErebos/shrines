@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
@@ -24,39 +25,41 @@ public class ShrineDoorDummyBlock extends Block {
     public static final IntegerProperty OFFSET_X = IntegerProperty.create("offset_x", 0, 2);
     public static final IntegerProperty OFFSET_Y = IntegerProperty.create("offset_y", 0, 2);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
 
     public ShrineDoorDummyBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(OFFSET_X, 0)
                 .setValue(OFFSET_Y, 0)
-                .setValue(FACING, Direction.NORTH));
+                .setValue(FACING, Direction.NORTH)
+                .setValue(OPEN, false)); // Standardmäßig zu
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
+        // KEIN getBlockState mehr! Nur noch der eigene Status zählt.
+        if (state.getValue(OPEN)) {
+            int offsetX = state.getValue(OFFSET_X) - 1;
+            Direction facing = state.getValue(FACING);
 
-        BlockPos mainPos = findMainBlock(state, pos);
-        BlockState mainState = level.getBlockState(mainPos);
+            if (offsetX == 0) return Shapes.empty();
 
-        if (!(mainState.getBlock() instanceof ShrineDoorBlock)) return Shapes.block();
-        if (!mainState.getValue(ShrineDoorBlock.OPEN)) return Shapes.block();
-
-        int offsetX = state.getValue(OFFSET_X) - 1;
-        Direction facing = state.getValue(FACING);
-
-        if (offsetX == 0) return Shapes.empty();
-
-        return switch (facing) {
-            case NORTH -> offsetX == -1 ? Block.box(0, 0, 0, 8, 16, 16) : Block.box(8, 0, 0, 16, 16, 16);
-            case SOUTH -> offsetX == -1 ? Block.box(8, 0, 0, 16, 16, 16) : Block.box(0, 0, 0, 8, 16, 16);
-            case WEST -> offsetX == -1 ? Block.box(0, 0, 8, 16, 16, 16) : Block.box(0, 0, 0, 16, 16, 8);
-            case EAST -> offsetX == -1 ? Block.box(0, 0, 0, 16, 16, 8) : Block.box(0, 0, 8, 16, 16, 16);
-            default -> Shapes.block();
-        };
+            return switch (facing) {
+                case NORTH -> offsetX == -1 ? Block.box(0, 0, 0, 8, 16, 16) : Block.box(8, 0, 0, 16, 16, 16);
+                case SOUTH -> offsetX == -1 ? Block.box(8, 0, 0, 16, 16, 16) : Block.box(0, 0, 0, 8, 16, 16);
+                case WEST -> offsetX == -1 ? Block.box(0, 0, 8, 16, 16, 16) : Block.box(0, 0, 0, 16, 16, 8);
+                case EAST -> offsetX == -1 ? Block.box(0, 0, 0, 16, 16, 8) : Block.box(0, 0, 8, 16, 16, 16);
+                default -> Shapes.block();
+            };
+        }
+        return Shapes.block();
     }
 
     private BlockPos findMainBlock(BlockState state, BlockPos pos) {
+        // Falls aus irgendeinem Grund die Properties fehlen (sollte nicht sein, aber sicher ist sicher)
+        if (!state.hasProperty(OFFSET_X) || !state.hasProperty(FACING)) return pos;
+
         int r = state.getValue(OFFSET_X) - 1;
         int y = state.getValue(OFFSET_Y);
         Direction facing = state.getValue(FACING);
@@ -77,12 +80,21 @@ public class ShrineDoorDummyBlock extends Block {
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!newState.is(state.getBlock())) {
-            BlockPos mainPos = findMainBlock(state, pos);
+    public void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean isMoving) {
+        // Wenn der Block-Typ gleich bleibt (nur State-Änderung), Finger weg!
+        if (state.is(newState.getBlock())) {
+            super.onRemove(state, level, pos, newState, isMoving);
+            return;
+        }
 
-            if (level.getBlockState(mainPos).getBlock() instanceof ShrineDoorBlock) {
-                level.destroyBlock(mainPos, false);
+        // isMoving ist bei Strukturen oft true. Wir wollen den Main-Block NUR löschen,
+        // wenn ein Spieler den Dummy wirklich im Spiel abbricht.
+        if (!level.isClientSide && !isMoving) {
+            BlockPos mainPos = findMainBlock(state, pos);
+            BlockState mainState = level.getBlockState(mainPos);
+
+            if (mainState.getBlock() instanceof ShrineDoorBlock) {
+                level.removeBlock(mainPos, false);
             }
         }
 
@@ -91,7 +103,7 @@ public class ShrineDoorDummyBlock extends Block {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(OFFSET_X, OFFSET_Y, FACING);
+        builder.add(OFFSET_X, OFFSET_Y, FACING, OPEN);
     }
 
     @Override
@@ -100,7 +112,19 @@ public class ShrineDoorDummyBlock extends Block {
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return this.getShape(state, level, pos, context);
+    }
+
+    @Override
+    public BlockState rotate(BlockState state, net.minecraft.world.level.block.Rotation rotation) {
+        // Dreht das FACING basierend auf der Rotation der Struktur/Welt
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, net.minecraft.world.level.block.Mirror mirror) {
+        // Spiegelt den Block (wichtig für symmetrische Strukturen)
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 }

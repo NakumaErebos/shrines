@@ -53,30 +53,6 @@ public class ShrineDoorBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        if (!level.isClientSide) {
-            Direction facing = state.getValue(FACING);
-            Direction right = facing.getClockWise();
-
-            for (int r = -1; r <= 1; r++) {
-                for (int y = 0; y <= 2; y++) {
-
-                    if (r == 0 && y == 0) continue;
-
-                    BlockPos targetPos = pos.relative(right, r).above(y);
-
-                    BlockState dummyState = ModBlocks.SHRINE_DOOR_DUMMY.get().defaultBlockState()
-                            .setValue(ShrineDoorDummyBlock.OFFSET_X, r + 1)
-                            .setValue(ShrineDoorDummyBlock.OFFSET_Y, y)
-                            .setValue(ShrineDoorDummyBlock.FACING, facing);
-
-                    level.setBlock(targetPos, dummyState, 3);
-                }
-            }
-        }
-    }
-
-    @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
             Direction right = state.getValue(FACING).getClockWise();
@@ -106,24 +82,54 @@ public class ShrineDoorBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
         if (!level.isClientSide && player.hasInfiniteMaterials()) {
-            state = state.cycle(OPEN);
-            level.setBlock(pos, state, 10);
+            boolean newState = !state.getValue(OPEN);
+
+            // 1. Hauptblock umschalten
+            level.setBlock(pos, state.setValue(OPEN, newState), 10);
+
+            // 2. Dummies umschalten
+            updateDummies(level, pos, state, newState);
+
             return InteractionResult.SUCCESS;
-        } else {
-            return InteractionResult.PASS;
         }
+        return InteractionResult.PASS;
     }
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (!oldState.is(state.getBlock())) {
-            return;
+        // 1. Prüfen: Ist es derselbe Block? (Dann hat sich nur ein State wie OPEN geändert)
+        if (state.is(oldState.getBlock())) {
+            boolean wasOpen = oldState.getValue(OPEN);
+            boolean isOpen = state.getValue(OPEN);
+
+            // 2. Wenn sich der OPEN-Status geändert hat, Dummies benachrichtigen
+            if (wasOpen != isOpen && !level.isClientSide) {
+                updateDummies(level, pos, state, isOpen);
+            }
         }
-        if (state.getValue(OPEN) && !oldState.getValue(OPEN)) {
-            level.playSound(null, pos, ModSounds.SHRINE_DOOR_OPEN.get(),
-                    SoundSource.BLOCKS, 1.0F, 1.0F);
+        super.onPlace(state, level, pos, oldState, isMoving);
+    }
+
+    // Hilfsmethode zur Synchronisation der Dummies
+    private void updateDummies(Level level, BlockPos pos, BlockState state, boolean open) {
+        Direction facing = state.getValue(FACING);
+        Direction right = facing.getClockWise();
+
+        for (int r = -1; r <= 1; r++) {
+            for (int y = 0; y <= 2; y++) {
+                // Den Hauptblock selbst überspringen
+                if (r == 0 && y == 0) continue;
+
+                BlockPos targetPos = pos.relative(right, r).above(y);
+                BlockState targetState = level.getBlockState(targetPos);
+
+                // Wenn dort ein Dummy steht, setzen wir seinen OPEN-Status auf den der Tür
+                if (targetState.getBlock() instanceof ShrineDoorDummyBlock) {
+                    level.setBlock(targetPos, targetState.setValue(ShrineDoorDummyBlock.OPEN, open), 3);
+                }
+            }
         }
     }
 
@@ -135,5 +141,17 @@ public class ShrineDoorBlock extends BaseEntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new ShrineDoorBlockEntity(pos, state);
+    }
+
+    @Override
+    public BlockState rotate(BlockState state, net.minecraft.world.level.block.Rotation rotation) {
+        // Dreht das FACING basierend auf der Rotation der Struktur/Welt
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, net.minecraft.world.level.block.Mirror mirror) {
+        // Spiegelt den Block (wichtig für symmetrische Strukturen)
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 }

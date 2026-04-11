@@ -186,7 +186,6 @@ public class ModBlocks {
     public static final DeferredBlock<Block> SHEIKAHSTONE_LAMP = registerBlock("sheikahstone_lamp",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.BEDROCK).noOcclusion().noCollission().lightLevel(p_50872_ -> 15)));
 
-
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);
