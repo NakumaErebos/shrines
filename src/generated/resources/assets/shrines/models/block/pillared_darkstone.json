@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "shrines:block/pillared_darkstone_top",
+    "side": "shrines:block/pillared_darkstone_side"
+  }
+}

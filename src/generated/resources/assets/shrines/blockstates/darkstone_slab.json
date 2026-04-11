@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "shrines:block/darkstone_slab"
+    },
+    "type=double": {
+      "model": "shrines:block/darkstone"
+    },
+    "type=top": {
+      "model": "shrines:block/darkstone_slab_top"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "variants": {
+    "state=0,type=bottom": {
+      "model": "shrines:block/sheikahstone_slab_0"
+    },
+    "state=0,type=double": {
+      "model": "shrines:block/sheikahstone_0"
+    },
+    "state=0,type=top": {
+      "model": "shrines:block/sheikahstone_slab_top_0"
+    },
+    "state=1,type=bottom": {
+      "model": "shrines:block/sheikahstone_slab_1"
+    },
+    "state=1,type=double": {
+      "model": "shrines:block/sheikahstone_1"
+    },
+    "state=1,type=top": {
+      "model": "shrines:block/sheikahstone_slab_top_1"
+    },
+    "state=2,type=bottom": {
+      "model": "shrines:block/sheikahstone_slab_2"
+    },
+    "state=2,type=double": {
+      "model": "shrines:block/sheikahstone_2"
+    },
+    "state=2,type=top": {
+      "model": "shrines:block/sheikahstone_slab_top_2"
+    },
+    "state=3,type=bottom": {
+      "model": "shrines:block/sheikahstone_slab_3"
+    },
+    "state=3,type=double": {
+      "model": "shrines:block/sheikahstone_3"
+    },
+    "state=3,type=top": {
+      "model": "shrines:block/sheikahstone_slab_top_3"
+    }
+  }
+}

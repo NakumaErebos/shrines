@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "shrines:block/glowtrimmed_sheikahstone_bottom",
+    "side": "shrines:block/glowtrimmed_sheikahstone_side",
+    "top": "shrines:block/glowtrimmed_sheikahstone_top"
+  }
+}
