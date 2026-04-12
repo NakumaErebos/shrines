@@ -3,11 +3,9 @@ package net.nakumaerebos.shrines.block.custom;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -47,12 +45,12 @@ public class SheikahLecternBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return SHAPE;
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
         if (state.getValue(ACTIVATED)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
@@ -74,31 +72,48 @@ public class SheikahLecternBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        // 1. Schritt: Modell wechseln (nach den ersten 0.75s)
+    protected void tick(BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         if (!state.getValue(ACTIVATED)) {
             level.setBlock(pos, state.setValue(ACTIVATED, true), 3);
-            // 2. Schritt: Zweiten Tick für die Tür in 0.5s (10 Ticks) planen
             level.scheduleTick(pos, this, 10);
-        }
-        // 3. Schritt: Nach der Aktivierung (die weiteren 0.5s sind um)
-        else {
-            openNearbyShrineDoors(level, pos);
+        } else {
+            // Hier rufen wir die neue kombinierte Aktivierungs-Logik auf
+            activateNearbyShrineMechanisms(level, pos);
         }
     }
 
-    private void openNearbyShrineDoors(Level level, BlockPos pos) {
-        int radius = 5;
-        // Wir iterieren durch einen Bereich von 5 Blöcken in jede Richtung
-        for (BlockPos targetPos : BlockPos.betweenClosed(pos.offset(-radius, -radius, -radius), pos.offset(radius, radius, radius))) {
-            BlockState targetState = level.getBlockState(targetPos);
+    private void activateNearbyShrineMechanisms(Level level, BlockPos pos) {
+        int radius = 12;
+        double radiusSq = radius * radius; // Für den euklidischen Vergleich (Distanz im Quadrat ist performanter)
 
-            // Prüfen, ob der Block eine Shrine-Tür ist
-            // Ich nutze hier den Klassennamen deiner Tür-Klasse (bitte ggf. anpassen)
-            if (targetState.getBlock() instanceof ShrineDoorBlock) {
-                if (targetState.hasProperty(BlockStateProperties.OPEN) && !targetState.getValue(BlockStateProperties.OPEN)) {
-                    // Tür auf OPEN setzen
-                    level.setBlock(targetPos, targetState.setValue(BlockStateProperties.OPEN, true), 3);
+        // Wir suchen in einem 8x8x8 Bereich
+        for (BlockPos targetPos : BlockPos.betweenClosed(pos.offset(-radius, -radius, -radius), pos.offset(radius, radius, radius))) {
+
+            // Euklidische Distanz prüfen: (x2-x1)^2 + (y2-y1)^2 + (z2-z1)^2 <= r^2
+            if (targetPos.distSqr(pos) <= radiusSq) {
+                BlockState targetState = level.getBlockState(targetPos);
+
+                // 1. Logik für die Shrine-Tür (radius war vorher 5, jetzt 8)
+                if (targetState.getBlock() instanceof ShrineDoorBlock) {
+                    if (targetState.hasProperty(BlockStateProperties.OPEN) && !targetState.getValue(BlockStateProperties.OPEN)) {
+                        level.setBlock(targetPos, targetState.setValue(BlockStateProperties.OPEN, true), 3);
+                    }
+                }
+
+                // 2. Logik für die SheikahState Blöcke
+                if (targetState.getBlock() instanceof SheikahStateBlock) {
+                    int currentState = targetState.getValue(SheikahStateBlock.STATE);
+                    if (currentState == 2) {
+                        // Von State 2 (blau/aktivierend) auf State 3 (aktiviert) setzen
+                        level.setBlock(targetPos, targetState.setValue(SheikahStateBlock.STATE, 3), 3);
+                    }
+                }
+
+                if (targetState.getBlock() instanceof SheikahStateSlabBlock) {
+                    int currentState = targetState.getValue(SheikahStateSlabBlock.STATE);
+                    if (currentState == 2) {
+                        level.setBlock(targetPos, targetState.setValue(SheikahStateSlabBlock.STATE, 3), 3);
+                    }
                 }
             }
         }
@@ -106,7 +121,7 @@ public class SheikahLecternBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return new SheikahLecternBlockEntity(pos, state);
     }
 
@@ -121,14 +136,15 @@ public class SheikahLecternBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public BlockState rotate(BlockState state, net.minecraft.world.level.block.Rotation rotation) {
-        // Dreht das FACING basierend auf der Rotation der Struktur/Welt
-        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    protected @NotNull BlockState mirror(BlockState state, net.minecraft.world.level.block.@NotNull Mirror mirror) {
+        // In 1.21.1 nutzt man die Methode des States,
+        // die intern die korrekte Rotation basierend auf dem Mirror berechnet.
+        return state.mirror(mirror);
     }
 
     @Override
-    public BlockState mirror(BlockState state, net.minecraft.world.level.block.Mirror mirror) {
-        // Spiegelt den Block (wichtig für symmetrische Strukturen)
-        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    protected @NotNull BlockState rotate(BlockState state, net.minecraft.world.level.block.Rotation rotation) {
+        // Auch für die Rotation selbst nutzt man den State
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 }

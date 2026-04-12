@@ -5,6 +5,7 @@ import net.nakumaerebos.shrines.block.entity.ModBlockEntities;
 import net.nakumaerebos.shrines.client.HolyShimmerRenderer;
 import net.nakumaerebos.shrines.client.SheikahLecternRenderer;
 import net.nakumaerebos.shrines.client.ShrineDoorRenderer;
+import net.nakumaerebos.shrines.client.ShrineItemRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -39,5 +40,7 @@ public class ShrinesClient {
         event.registerBlockEntityRenderer(ModBlockEntities.SHRINE_DOOR_BE.get(), ShrineDoorRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.SHEIKAH_LECTERN_BE.get(), SheikahLecternRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.HOLY_SHIMMER.get(), HolyShimmerRenderer::new);
+
+        event.registerEntityRenderer(net.nakumaerebos.shrines.entity.ModEntities.SHRINE_ITEM.get(), ShrineItemRenderer::new);
     }
 }

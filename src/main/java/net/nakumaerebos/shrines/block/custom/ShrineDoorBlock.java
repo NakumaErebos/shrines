@@ -5,9 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -24,13 +22,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.nakumaerebos.shrines.block.ModBlocks;
 import net.nakumaerebos.shrines.block.entity.ShrineDoorBlockEntity;
 import net.nakumaerebos.shrines.sound.ModSounds;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class ShrineDoorBlock extends BaseEntityBlock {
+
+    public static final MapCodec<ShrineDoorBlock> CODEC = simpleCodec(ShrineDoorBlock::new);
 
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -44,7 +42,7 @@ public class ShrineDoorBlock extends BaseEntityBlock {
 
     @Override
     protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
-        return null;
+        return CODEC;
     }
 
     @Override
@@ -53,7 +51,7 @@ public class ShrineDoorBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
             Direction right = state.getValue(FACING).getClockWise();
 
@@ -77,7 +75,7 @@ public class ShrineDoorBlock extends BaseEntityBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return state.getValue(OPEN) ? Shapes.empty() : Shapes.block();
     }
 
@@ -98,7 +96,7 @@ public class ShrineDoorBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+    public void onPlace(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState oldState, boolean isMoving) {
         // 1. Prüfen: Ist es derselbe Block? (Dann hat sich nur ein State wie OPEN geändert)
         if (state.is(oldState.getBlock())) {
             boolean wasOpen = oldState.getValue(OPEN);
@@ -114,6 +112,8 @@ public class ShrineDoorBlock extends BaseEntityBlock {
 
     // Hilfsmethode zur Synchronisation der Dummies
     private void updateDummies(Level level, BlockPos pos, BlockState state, boolean open) {
+        level.playSound(null, pos, ModSounds.SHRINE_DOOR_OPEN.get(),
+                SoundSource.BLOCKS, 1.0F, 1.0F);
         Direction facing = state.getValue(FACING);
         Direction right = facing.getClockWise();
 
@@ -134,24 +134,25 @@ public class ShrineDoorBlock extends BaseEntityBlock {
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return new ShrineDoorBlockEntity(pos, state);
     }
 
     @Override
-    public BlockState rotate(BlockState state, net.minecraft.world.level.block.Rotation rotation) {
-        // Dreht das FACING basierend auf der Rotation der Struktur/Welt
-        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    protected @NotNull BlockState mirror(BlockState state, net.minecraft.world.level.block.@NotNull Mirror mirror) {
+        // In 1.21.1 nutzt man die Methode des States,
+        // die intern die korrekte Rotation basierend auf dem Mirror berechnet.
+        return state.mirror(mirror);
     }
 
     @Override
-    public BlockState mirror(BlockState state, net.minecraft.world.level.block.Mirror mirror) {
-        // Spiegelt den Block (wichtig für symmetrische Strukturen)
-        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    protected @NotNull BlockState rotate(BlockState state, net.minecraft.world.level.block.Rotation rotation) {
+        // Auch für die Rotation selbst nutzt man den State
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 }

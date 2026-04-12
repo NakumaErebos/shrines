@@ -4,7 +4,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
 import net.nakumaerebos.shrines.Shrines;
 import net.nakumaerebos.shrines.block.custom.*;
 import net.nakumaerebos.shrines.item.ModItems;
@@ -64,8 +63,7 @@ public class ModBlocks {
             () -> new SheikahStateBlock(BlockBehaviour.Properties.of()
                     .lightLevel(state -> switch (state.getValue(SheikahStateBlock.STATE)) {
                         case 1 -> 5;
-                        case 2 -> 9;
-                        case 3 -> 9;
+                        case 2, 3 -> 9;
                         default -> 0;
                     }).noLootTable()
             ));

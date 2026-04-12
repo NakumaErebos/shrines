@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "shrines:block/sheikahstone_swirls_2",
-    "side": "shrines:block/sheikahstone_swirls_2",
-    "top": "shrines:block/sheikahstone_swirls_2"
-  }
-}

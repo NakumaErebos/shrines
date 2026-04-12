@@ -34,7 +34,7 @@ public class HolyShimmerEntity extends BlockEntity implements GeoBlockEntity {
         boolean isEdge = this.getBlockState().getValue(HolyShimmerBlock.IS_EDGE);
 
         if (isEdge) {
-            // Der Name muss exakt mit der ID in der .animation.json übereinstimmen
+            // Der Name muss exakt mit der ID in der.animation.json übereinstimmen
             triggerAnim("controller", "shatter_edge");
         } else {
             triggerAnim("controller", "shatter");
@@ -45,7 +45,7 @@ public class HolyShimmerEntity extends BlockEntity implements GeoBlockEntity {
     }
 
     // Tick-Methode muss im Block registriert oder via NeoForge Event aufgerufen werden
-    public static void tick(Level level, BlockPos pos, BlockState state, HolyShimmerEntity tile) {
+    public static void tick(Level level, BlockPos pos, HolyShimmerEntity tile) {
         if (tile.removalTimer > 0) {
             tile.removalTimer--;
             if (tile.removalTimer == 0) {

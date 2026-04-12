@@ -69,7 +69,7 @@ public class ShrineDoorDummyBlock extends Block {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
         BlockPos mainPos = findMainBlock(state, pos);
 
         if (level.getBlockState(mainPos).getBlock() instanceof ShrineDoorBlock) {
@@ -107,7 +107,7 @@ public class ShrineDoorDummyBlock extends Block {
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState state) {
+    public @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
         return RenderShape.INVISIBLE;
     }
 
@@ -117,14 +117,15 @@ public class ShrineDoorDummyBlock extends Block {
     }
 
     @Override
-    public BlockState rotate(BlockState state, net.minecraft.world.level.block.Rotation rotation) {
-        // Dreht das FACING basierend auf der Rotation der Struktur/Welt
-        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    protected @NotNull BlockState mirror(BlockState state, net.minecraft.world.level.block.@NotNull Mirror mirror) {
+        // In 1.21.1 nutzt man die Methode des States,
+        // die intern die korrekte Rotation basierend auf dem Mirror berechnet.
+        return state.mirror(mirror);
     }
 
     @Override
-    public BlockState mirror(BlockState state, net.minecraft.world.level.block.Mirror mirror) {
-        // Spiegelt den Block (wichtig für symmetrische Strukturen)
-        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    protected @NotNull BlockState rotate(BlockState state, net.minecraft.world.level.block.Rotation rotation) {
+        // Auch für die Rotation selbst nutzt man den State
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 }

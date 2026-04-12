@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/inner_stairs",
-  "textures": {
-    "bottom": "shrines:block/sheikahstone_1",
-    "side": "shrines:block/sheikahstone_1",
-    "top": "shrines:block/sheikahstone_1"
-  }
-}

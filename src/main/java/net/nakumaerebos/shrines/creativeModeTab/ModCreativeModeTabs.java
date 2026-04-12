@@ -18,9 +18,7 @@ public class ModCreativeModeTabs {
             .withTabsBefore(net.minecraft.world.item.CreativeModeTabs.COMBAT)
             .icon(ModItems.SHEIKAHSLATE::toStack)
             .displayItems((parameters, output) -> {
-                ModItems.ITEMS.getEntries().forEach(item -> {
-                    output.accept(item.get());
-                });
+                ModItems.ITEMS.getEntries().forEach(item -> output.accept(item.get()));
                 ModBlocks.BLOCKS.getEntries().stream()
                         .filter(block -> block != ModBlocks.SHRINE_DOOR_DUMMY)
                         .forEach(block -> output.accept(block.get()));

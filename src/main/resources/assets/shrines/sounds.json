@@ -16,5 +16,11 @@
     "sounds": [
       "shrines:holy_shimmer_shatter"
     ]
+  },
+  "shrine_music": {
+    "subtitle": "sounds.shrines.shrine_music",
+    "sounds": [
+      "shrines:shrine_music"
+    ]
   }
 }

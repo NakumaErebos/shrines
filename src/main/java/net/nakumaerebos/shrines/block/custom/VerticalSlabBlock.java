@@ -16,6 +16,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
 
@@ -35,9 +36,8 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return switch (state.getValue(FACING)) {
-            case NORTH -> NORTH_SHAPE;
             case SOUTH -> SOUTH_SHAPE;
             case WEST  -> WEST_SHAPE;
             case EAST  -> EAST_SHAPE;
@@ -60,15 +60,15 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public FluidState getFluidState(BlockState state) {
+    public @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED)
                 ? Fluids.WATER.getSource(false)
                 : super.getFluidState(state);
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
-                                  LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    public @NotNull BlockState updateShape(BlockState state, @NotNull Direction direction, @NotNull BlockState neighborState,
+                                           @NotNull LevelAccessor level, @NotNull BlockPos pos, @NotNull BlockPos neighborPos) {
 
         if (state.getValue(WATERLOGGED)) {
             level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
@@ -78,14 +78,15 @@ public class VerticalSlabBlock extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    public BlockState rotate(BlockState state, net.minecraft.world.level.block.Rotation rotation) {
-        // Dreht das FACING basierend auf der Rotation der Struktur/Welt
-        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    protected @NotNull BlockState mirror(BlockState state, net.minecraft.world.level.block.@NotNull Mirror mirror) {
+        // In 1.21.1 nutzt man die Methode des States,
+        // die intern die korrekte Rotation basierend auf dem Mirror berechnet.
+        return state.mirror(mirror);
     }
 
     @Override
-    public BlockState mirror(BlockState state, net.minecraft.world.level.block.Mirror mirror) {
-        // Spiegelt den Block (wichtig für symmetrische Strukturen)
-        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    protected @NotNull BlockState rotate(BlockState state, net.minecraft.world.level.block.Rotation rotation) {
+        // Auch für die Rotation selbst nutzt man den State
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 }

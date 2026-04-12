@@ -17,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ElevatorPlatformBlock extends HorizontalDirectionalBlock {
 
+    public static final MapCodec<ElevatorPlatformBlock> CODEC = simpleCodec(ElevatorPlatformBlock::new);
+
     public ElevatorPlatformBlock(BlockBehaviour.Properties properties) {
         super(properties);
         // Standardmäßig nach Norden ausrichten
@@ -25,7 +27,7 @@ public class ElevatorPlatformBlock extends HorizontalDirectionalBlock {
 
     @Override
     protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return null;
+        return CODEC;
     }
 
     /**
@@ -33,7 +35,7 @@ public class ElevatorPlatformBlock extends HorizontalDirectionalBlock {
      * Durch Shapes.empty() geht jeder Klick "durch" den Block auf das Objekt dahinter.
      */
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return Shapes.empty();
     }
 
@@ -42,7 +44,7 @@ public class ElevatorPlatformBlock extends HorizontalDirectionalBlock {
      * Hier geben wir eine Form zurück, damit der Spieler auf der Plattform stehen kann.
      */
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return Shapes.empty();
     }
 
@@ -51,19 +53,19 @@ public class ElevatorPlatformBlock extends HorizontalDirectionalBlock {
      * den Block ignoriert.
      */
     @Override
-    public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
+    public @NotNull VoxelShape getInteractionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
         return Shapes.empty();
     }
 
     // -- Licht- und Render-Einstellungen --
 
     @Override
-    public float getShadeBrightness(BlockState state, BlockGetter world, BlockPos pos) {
+    public float getShadeBrightness(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
         return 1.0F;
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter world, BlockPos pos) {
+    public boolean propagatesSkylightDown(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
         return true;
     }
 

@@ -7,10 +7,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.nakumaerebos.shrines.block.custom.HolyShimmerBlock;
 import net.nakumaerebos.shrines.block.entity.HolyShimmerEntity;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
 
@@ -42,11 +42,18 @@ public class HolyShimmerRenderer extends GeoBlockRenderer<HolyShimmerEntity> {
 
     @Override
     public void render(HolyShimmerEntity animatable, float partialTick, PoseStack poseStack,
-                       MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+                       @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
 
-        Direction facing = animatable.getBlockState().getValue(HolyShimmerBlock.FACING);
+        animatable.getBlockState().getValue(HolyShimmerBlock.FACING);
         poseStack.pushPose();
         super.render(animatable, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
         poseStack.popPose();
+    }
+
+    @Override
+    public net.minecraft.world.phys.@NotNull AABB getRenderBoundingBox(HolyShimmerEntity animatable) {
+        // Wir nehmen die Position der BlockEntity und vergrößern sie massiv.
+        // Da dein Tor 6 Blöcke breit und 3 hoch ist, ist inflate(4) ein sicherer Wert.
+        return new net.minecraft.world.phys.AABB(animatable.getBlockPos()).inflate(1, 3.0, 1);
     }
 }

@@ -85,13 +85,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
         var builder = getVariantBuilder(block.get());
 
         for (int i = 0; i <= 3; i++) {
-            int stateValue = i;
-            ResourceLocation tex = modLoc("block/" + fullBlockPath + "_" + stateValue);
+            ResourceLocation tex = modLoc("block/" + fullBlockPath + "_" + i);
 
             // 1. Modelle erstellen
-            ModelFile main = models().stairs(path + "_" + stateValue, tex, tex, tex);
-            ModelFile inner = models().stairsInner(path + "_inner_" + stateValue, tex, tex, tex);
-            ModelFile outer = models().stairsOuter(path + "_outer_" + stateValue, tex, tex, tex);
+            ModelFile main = models().stairs(path + "_" + i, tex, tex, tex);
+            ModelFile inner = models().stairsInner(path + "_inner_" + i, tex, tex, tex);
+            ModelFile outer = models().stairsOuter(path + "_outer_" + i, tex, tex, tex);
 
             for (Direction facing : BlockStateProperties.HORIZONTAL_FACING.getPossibleValues()) {
                 for (Half half : BlockStateProperties.HALF.getPossibleValues()) {
@@ -102,12 +101,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
                         int yRot = (getYRotation(facing, shape) + 180) % 360;
 
                         builder.partialState()
-                                .with(SheikahStateStairBlock.STATE, stateValue)
+                                .with(SheikahStateStairBlock.STATE, i)
                                 .with(BlockStateProperties.HORIZONTAL_FACING, facing)
                                 .with(BlockStateProperties.HALF, half)
                                 .with(BlockStateProperties.STAIRS_SHAPE, shape)
                                 .addModels(new ConfiguredModel(getSelectedStairModel(shape, main, inner, outer),
-                                        getXRotation(half, shape), yRot, isUvLock(shape)));
+                                        getXRotation(half), yRot, isUvLock()));
                     }
                 }
             }
@@ -141,19 +140,18 @@ public class ModBlockStateProvider extends BlockStateProvider {
         var builder = getVariantBuilder(block.get());
 
         for (int i = 0; i <= 3; i++) {
-            int stateValue = i;
-            ResourceLocation tex = modLoc("block/" + fullBlockPath + "_" + stateValue);
+            ResourceLocation tex = modLoc("block/" + fullBlockPath + "_" + i);
 
             // 1. Modelle erstellen (Unten, Oben, Doppelt)
-            ModelFile bottom = models().slab(path + "_" + stateValue, tex, tex, tex);
-            ModelFile top = models().slabTop(path + "_top_" + stateValue, tex, tex, tex);
+            ModelFile bottom = models().slab(path + "_" + i, tex, tex, tex);
+            ModelFile top = models().slabTop(path + "_top_" + i, tex, tex, tex);
             // Double Slab nutzt einfach das Modell des vollen Blocks
-            ModelFile doubleSlab = models().getExistingFile(modLoc("block/" + fullBlockPath + "_" + stateValue));
+            ModelFile doubleSlab = models().getExistingFile(modLoc("block/" + fullBlockPath + "_" + i));
 
             // 2. Varianten manuell zuweisen (für jeden SlabType)
             for (SlabType type : BlockStateProperties.SLAB_TYPE.getPossibleValues()) {
                 builder.partialState()
-                        .with(SheikahStateSlabBlock.STATE, stateValue)
+                        .with(SheikahStateSlabBlock.STATE, i)
                         .with(BlockStateProperties.SLAB_TYPE, type)
                         .addModels(new ConfiguredModel(getSelectedSlabModel(type, bottom, top, doubleSlab)));
             }
@@ -185,11 +183,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
         return ((int) facing.toYRot() + 270 + offset) % 360;
     }
 
-    private int getXRotation(Half half, StairsShape shape) {
+    private int getXRotation(Half half) {
         return half == Half.TOP ? 180 : 0;
     }
 
-    private boolean isUvLock(StairsShape shape) {
+    private boolean isUvLock() {
         return true;
     }
 

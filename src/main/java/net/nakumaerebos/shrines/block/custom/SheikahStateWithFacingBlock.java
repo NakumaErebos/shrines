@@ -5,8 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -51,12 +49,15 @@ public class SheikahStateWithFacingBlock extends HorizontalDirectionalBlock {
 
     // Hilfsmethoden für Standard-Block-Interaktionen (Rotation/Spiegeln)
     @Override
-    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
-        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
+    protected @NotNull BlockState mirror(BlockState state, net.minecraft.world.level.block.@NotNull Mirror mirror) {
+        // In 1.21.1 nutzt man die Methode des States,
+        // die intern die korrekte Rotation basierend auf dem Mirror berechnet.
+        return state.mirror(mirror);
     }
 
     @Override
-    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
-        return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
+    protected @NotNull BlockState rotate(BlockState state, net.minecraft.world.level.block.Rotation rotation) {
+        // Auch für die Rotation selbst nutzt man den State
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 }
