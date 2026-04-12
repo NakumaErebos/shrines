@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "shrines:block/darkstone",
+    "side": "shrines:block/darkstone",
+    "top": "shrines:block/darkstone"
+  }
+}

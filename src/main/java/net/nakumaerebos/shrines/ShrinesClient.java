@@ -1,17 +1,21 @@
 package net.nakumaerebos.shrines;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.nakumaerebos.shrines.block.entity.ModBlockEntities;
 import net.nakumaerebos.shrines.client.HolyShimmerRenderer;
 import net.nakumaerebos.shrines.client.SheikahLecternRenderer;
 import net.nakumaerebos.shrines.client.ShrineDoorRenderer;
 import net.nakumaerebos.shrines.client.ShrineItemRenderer;
+import net.nakumaerebos.shrines.sound.ModSounds;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -42,5 +46,34 @@ public class ShrinesClient {
         event.registerBlockEntityRenderer(ModBlockEntities.HOLY_SHIMMER.get(), HolyShimmerRenderer::new);
 
         event.registerEntityRenderer(net.nakumaerebos.shrines.entity.ModEntities.SHRINE_ITEM.get(), ShrineItemRenderer::new);
+    }
+
+    @EventBusSubscriber(modid = Shrines.MOD_ID, value = Dist.CLIENT)
+    public static class ClientAmbienceHandler {
+
+        private static SoundInstance currentMusic = null;
+
+        @SubscribeEvent
+        public static void onClientTick(ClientTickEvent.Post event) {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.level == null || mc.player == null) return;
+
+            boolean inShrine = mc.level.dimension().location().getPath().equals("shrine_interior");
+
+            // Wenn wir im Shrine sind und noch nichts spielt
+            if (inShrine) {
+                if (currentMusic == null || !mc.getSoundManager().isActive(currentMusic)) {
+                    // Wir erstellen eine Loop-SoundInstance
+                    currentMusic = SimpleSoundInstance.forMusic(ModSounds.SHRINE_MUSIC.get());
+                    mc.getSoundManager().play(currentMusic);
+                }
+            } else {
+                // Wenn wir die Dimension verlassen, Musik stoppen
+                if (currentMusic != null) {
+                    mc.getSoundManager().stop(currentMusic);
+                    currentMusic = null;
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "shrines:block/sheikahstone_swirls_0"
+  }
+}

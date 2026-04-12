@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "shrines:block/chiseled_darkstone_slab"
+    },
+    "type=double": {
+      "model": "shrines:block/chiseled_darkstone"
+    },
+    "type=top": {
+      "model": "shrines:block/chiseled_darkstone_slab_top"
+    }
+  }
+}

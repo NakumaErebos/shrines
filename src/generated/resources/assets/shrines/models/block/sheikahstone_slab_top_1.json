@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "shrines:block/sheikahstone_1",
+    "side": "shrines:block/sheikahstone_1",
+    "top": "shrines:block/sheikahstone_1"
+  }
+}

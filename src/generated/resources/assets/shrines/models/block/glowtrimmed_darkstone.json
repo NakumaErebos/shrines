@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "shrines:block/glowtrimmed_darkstone_bottom",
+    "side": "shrines:block/glowtrimmed_darkstone_side",
+    "top": "shrines:block/glowtrimmed_darkstone_top"
+  }
+}

@@ -2,7 +2,6 @@ package net.nakumaerebos.shrines;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.nakumaerebos.shrines.block.ModBlocks;
@@ -65,6 +64,7 @@ public class Shrines {
 
     @SubscribeEvent
     public void onPlayerTick(PlayerTickEvent.Post event) {
+
         Player player = event.getEntity();
 
         if (player instanceof ServerPlayer serverPlayer) {
@@ -73,13 +73,6 @@ public class Shrines {
 
             // Prüfung auf deine Dimension
             if (dimLocation.getPath().equals("shrine_interior")) {
-
-                // --- SOUND LOGIC ---
-                if (serverPlayer.level().getGameTime() % 7440 == 0) {
-                    serverPlayer.level().playSound(null, serverPlayer.blockPosition(),
-                            ModSounds.SHRINE_DOOR_OPEN.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-                }
-                // -------------------
 
                 // Wechsel von Survival zu Adventure
                 if (currentMode == GameType.SURVIVAL) {
