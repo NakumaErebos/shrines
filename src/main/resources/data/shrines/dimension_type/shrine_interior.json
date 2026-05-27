@@ -4,7 +4,7 @@
   "coordinate_scale": 1.0,
   "has_skylight": false,
   "has_ceiling": false,
-  "ambient_light": 0.5,
+  "ambient_light": 1,
   "monster_spawn_light_level": 0,
   "monster_spawn_block_light_limit": 0,
   "piglin_safe": true,
@@ -15,5 +15,5 @@
   "min_y": 0,
   "height": 384,
   "infiniburn": "#minecraft:infiniburn_nether",
-  "effects": "minecraft:the_end"
+  "effects": "shrines:shrine_interior"
 }

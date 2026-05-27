@@ -7,6 +7,7 @@ import net.nakumaerebos.shrines.Shrines;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
 public class ModEntities {
     public static final DeferredRegister<EntityType<?>> ENTITIES =
@@ -14,10 +15,38 @@ public class ModEntities {
 
     public static final DeferredHolder<EntityType<?>, EntityType<ShrineItemEntity>> SHRINE_ITEM =
             ENTITIES.register("shrine_item", () -> EntityType.Builder.of(ShrineItemEntity::new, MobCategory.MISC)
-                    .sized(1.0f, 1.0f) // Blockgröße
+                    .sized(1.0f, 1.0f)
                     .build("shrine_item"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<GuardianScoutProjectileEntity>> GUARDIANSCOUT_PROJECTILE =
+            ENTITIES.register("guardianscout_projectile", () -> EntityType.Builder.<GuardianScoutProjectileEntity>of(GuardianScoutProjectileEntity::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f) // Ein halber Block ist meist besser für Geschosse
+                    .clientTrackingRange(4)
+                    .updateInterval(20)
+                    .build("guardianscout_projectile"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<GuardianScoutMobEntity>> GUARDIAN_SCOUT =
+            ENTITIES.register("guardian_scout", () -> EntityType.Builder.of(GuardianScoutMobEntity::new, MobCategory.CREATURE)
+                    .sized(0.6f, 1.8f)
+                    .build("guardian_scout"));
+
+    // Bei deinen Registern hinzufügen:
+    public static final DeferredHolder<EntityType<?>, EntityType<GuardianScoutIIMobEntity>> GUARDIAN_SCOUT_II =
+            ENTITIES.register("guardian_scout_ii", () -> EntityType.Builder.of(GuardianScoutIIMobEntity::new, MobCategory.CREATURE)
+                    .sized(0.6f, 1.8f) // Selbe Hitbox
+                    .build("guardian_scout_ii"));
+
+
 
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);
+        // Wir fügen den Listener für die Attribute direkt hier dem Bus hinzu
+        eventBus.addListener(ModEntities::registerAttributes);
+    }
+
+    // Diese Methode verknüpft dein Entity mit den Werten (HP, Speed etc.)
+    private static void registerAttributes(EntityAttributeCreationEvent event) {
+        event.put(GUARDIAN_SCOUT.get(), GuardianScoutMobEntity.createAttributes().build());
+        event.put(GUARDIAN_SCOUT_II.get(), GuardianScoutIIMobEntity.createAttributes().build());
     }
 }
