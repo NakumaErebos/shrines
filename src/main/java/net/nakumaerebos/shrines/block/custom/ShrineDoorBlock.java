@@ -5,7 +5,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -22,9 +24,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.nakumaerebos.shrines.block.ModBlocks;
 import net.nakumaerebos.shrines.block.entity.ShrineDoorBlockEntity;
 import net.nakumaerebos.shrines.sound.ModSounds;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ShrineDoorBlock extends BaseEntityBlock {
 
@@ -108,6 +112,30 @@ public class ShrineDoorBlock extends BaseEntityBlock {
             }
         }
         super.onPlace(state, level, pos, oldState, isMoving);
+    }
+
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        if (!level.isClientSide) {
+            Direction facing = state.getValue(FACING);
+            Direction right = facing.getClockWise();
+
+            for (int r = -1; r <= 1; r++) {
+                for (int y = 0; y <= 2; y++) {
+
+                    if (r == 0 && y == 0) continue;
+
+                    BlockPos targetPos = pos.relative(right, r).above(y);
+
+                    BlockState dummyState = ModBlocks.SHRINE_DOOR_DUMMY.get().defaultBlockState()
+                            .setValue(ShrineDoorDummyBlock.OFFSET_X, r + 1)
+                            .setValue(ShrineDoorDummyBlock.OFFSET_Y, y)
+                            .setValue(ShrineDoorDummyBlock.FACING, facing);
+
+                    level.setBlock(targetPos, dummyState, 3);
+                }
+            }
+        }
     }
 
     // Hilfsmethode zur Synchronisation der Dummies

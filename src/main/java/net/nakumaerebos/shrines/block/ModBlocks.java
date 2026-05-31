@@ -3,6 +3,7 @@ package net.nakumaerebos.shrines.block;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.nakumaerebos.shrines.Shrines;
 import net.nakumaerebos.shrines.block.custom.*;
@@ -20,6 +21,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<SheikahStateBlock> SHEIKAHSTONE = registerBlock("sheikahstone",
             () -> new SheikahStateBlock(BlockBehaviour.Properties.of()
+                    .strength(-1.0F, 3600000.0F)
                     .lightLevel(state -> switch (state.getValue(SheikahStateBlock.STATE)) {
                         case 1 -> 5;
                         case 2 -> 6;
@@ -30,6 +32,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<SheikahStateSlabBlock> SHEIKAHSTONE_SLAB = registerBlock("sheikahstone_slab",
             () -> new SheikahStateSlabBlock(BlockBehaviour.Properties.of()
+                    .strength(-1.0F, 3600000.0F)
                     .lightLevel(state -> switch (state.getValue(SheikahStateBlock.STATE)) {
                         case 1 -> 5;
                         case 2 -> 6;
@@ -41,6 +44,7 @@ public class ModBlocks {
     public static final DeferredBlock<SheikahStateStairBlock> SHEIKAHSTONE_STAIRS = registerBlock("sheikahstone_stairs",
             () -> new SheikahStateStairBlock(ModBlocks.SHEIKAHSTONE.get().defaultBlockState(),
                     BlockBehaviour.Properties.of()
+                            .strength(-1.0F, 3600000.0F)
                             .lightLevel(state -> switch (state.getValue(SheikahStateBlock.STATE)) {
                                 case 1 -> 5;
                                 case 2 -> 6;
@@ -51,6 +55,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<SheikahStateBlock> DARK_SHEIKAHSTONE = registerBlock("dark_sheikahstone",
             () -> new SheikahStateBlock(BlockBehaviour.Properties.of()
+                    .strength(-1.0F, 3600000.0F)
                     .lightLevel(state -> switch (state.getValue(SheikahStateBlock.STATE)) {
                         case 1 -> 5;
                         case 2 -> 6;
@@ -61,6 +66,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<SheikahStateBlock> SHEIKAHSTONE_SWIRLS = registerBlock("sheikahstone_swirls",
             () -> new SheikahStateBlock(BlockBehaviour.Properties.of()
+                    .strength(-1.0F, 3600000.0F)
                     .lightLevel(state -> switch (state.getValue(SheikahStateBlock.STATE)) {
                         case 1 -> 5;
                         case 2, 3 -> 9;
@@ -71,8 +77,12 @@ public class ModBlocks {
     public static final DeferredBlock<WallBlock> SHEIKAHSTONE_SWIRLS_WALL = registerBlock("sheikahstone_swirls_wall",
             () -> new WallBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BEDROCK)));
 
+    public static final DeferredBlock<WallBlock> DARKSTONE_WALL = registerBlock("darkstone_wall",
+            () -> new WallBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BEDROCK)));
+
     public static final DeferredBlock<SheikahStateBlock> STARRY_DARKSTONE = registerBlock("starry_darkstone",
             () -> new SheikahStateBlock(BlockBehaviour.Properties.of()
+                    .strength(-1.0F, 3600000.0F)
                     .lightLevel(state -> switch (state.getValue(SheikahStateBlock.STATE)) {
                         case 1 -> 5;
                         case 2 -> 6;
@@ -83,6 +93,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<SheikahStateWithFacingBlock> SHRINE_SYMBOL_BLOCK = registerBlock("shrine_symbol_block",
             () -> new SheikahStateWithFacingBlock(BlockBehaviour.Properties.of()
+                    .strength(-1.0F, 3600000.0F)
                     .lightLevel(state -> switch (state.getValue(SheikahStateBlock.STATE)) {
                         case 1 -> 5;
                         case 2 -> 6;
@@ -93,6 +104,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<SheikahStateSlabBlock> SHEIKAHSTONE_SWIRLS_SLAB = registerBlock("sheikahstone_swirls_slab",
             () -> new SheikahStateSlabBlock(BlockBehaviour.Properties.of()
+                            .strength(-1.0F, 3600000.0F)
                             .lightLevel(state -> switch (state.getValue(SheikahStateBlock.STATE)) {
                                 case 1 -> 5;
                                 case 2 -> 6;
@@ -104,6 +116,7 @@ public class ModBlocks {
     public static final DeferredBlock<SheikahStateStairBlock> SHEIKAHSTONE_SWIRLS_STAIRS = registerBlock("sheikahstone_swirls_stairs",
             () -> new SheikahStateStairBlock(ModBlocks.SHEIKAHSTONE_SWIRLS.get().defaultBlockState(),
             BlockBehaviour.Properties.of()
+                    .strength(-1.0F, 3600000.0F)
                     .lightLevel(state -> switch (state.getValue(SheikahStateBlock.STATE)) {
                         case 1 -> 5;
                         case 2 -> 6;
@@ -116,25 +129,41 @@ public class ModBlocks {
             () -> new VerticalSlabBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER)));
 
     public static final DeferredBlock<Block> SHRINE_DOOR = registerBlock("shrine_door",
-            () -> new ShrineDoorBlock(BlockBehaviour.Properties.of().noOcclusion().noLootTable()));
+            () -> new ShrineDoorBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noOcclusion().noLootTable()));
+
+    public static final DeferredBlock<Block> DUNGEON_DOOR = registerBlock("dungeon_door",
+            () -> new DungeonDoorBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noOcclusion().noLootTable()));
 
     public static final DeferredBlock<Block> SHEIKAH_LECTERN = registerBlock("sheikah_lectern",
-            () -> new SheikahLecternBlock(BlockBehaviour.Properties.of().noOcclusion().noLootTable()));
+            () -> new SheikahLecternBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noOcclusion().noLootTable()));
+
+    public static final DeferredBlock<Block> SHEIKAH_TORCH = registerBlock("sheikah_torch",
+            () -> new SheikahTorchBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noOcclusion().noLootTable()));
+
+    public static final DeferredBlock<Block> SHRINE_CHEST = registerBlock("shrine_chest",
+            () -> new ShrineChestBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noOcclusion().noLootTable(), () -> BlockEntityType.CHEST));
+
 
     public static final DeferredBlock<Block> SHRINE_DOOR_DUMMY = registerBlock("shrine_door_dummy",
-            () -> new ShrineDoorDummyBlock(BlockBehaviour.Properties.of().noLootTable().noOcclusion().noCollission().dynamicShape()));
+            () -> new ShrineDoorDummyBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion().noCollission().dynamicShape()));
+
+    public static final DeferredBlock<Block> DUNGEON_DOOR_DUMMY = registerBlock("dungeon_door_dummy",
+            () -> new DungeonDoorDummyBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noLootTable().noOcclusion().noCollission().dynamicShape()));
 
     public static final DeferredBlock<Block> DARKSTONE = registerBlock("darkstone",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.BEDROCK)));
 
+    public static final DeferredBlock<ElevatorPlatformBlock> TELEPORT_PLATFORM = registerBlock("teleport_platform",
+            () -> new ElevatorPlatformBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noOcclusion().noLootTable()));
+
     public static final DeferredBlock<ElevatorPlatformBlock> ELEVATOR_PLATFORM = registerBlock("elevator_platform",
-            () -> new ElevatorPlatformBlock(BlockBehaviour.Properties.of().noOcclusion().noLootTable()));
+            () -> new ElevatorPlatformBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noOcclusion().noLootTable()));
 
     public static final DeferredBlock<ElevatorPlatformBlock> ELEVATOR_PLATFORM_MOVED = registerBlock("elevator_platform_moved",
-            () -> new ElevatorPlatformBlock(BlockBehaviour.Properties.of().noOcclusion().noLootTable()));
+            () -> new ElevatorPlatformBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noOcclusion().noLootTable()));
 
     public static final DeferredBlock<HolyShimmerBlock> HOLY_SHIMMER = registerBlock("holy_shimmer",
-            () -> new HolyShimmerBlock(BlockBehaviour.Properties.of().noOcclusion().noLootTable()));
+            () -> new HolyShimmerBlock(BlockBehaviour.Properties.of().strength(-1.0F, 3600000.0F).noOcclusion().noLootTable()));
 
     public static final DeferredBlock<ElevatorBlock> ELEVATOR = registerBlock("elevator",
             () -> new ElevatorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BEDROCK)));
@@ -183,6 +212,12 @@ public class ModBlocks {
 
     public static final DeferredBlock<Block> SHEIKAHSTONE_LAMP = registerBlock("sheikahstone_lamp",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.BEDROCK).noOcclusion().noCollission().lightLevel(p_50872_ -> 15)));
+
+    public static final DeferredBlock<DeepDarknessBlock> DEEP_DARKNESS_BLOCK = registerBlock("deep_darkness_block",
+            () -> new DeepDarknessBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BEDROCK)));
+
+    public static final DeferredBlock<ClearEffectsBlock> CLEAR_EFFECTS_BLOCK = registerBlock("clear_effects_block",
+            () -> new ClearEffectsBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.BEDROCK)));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

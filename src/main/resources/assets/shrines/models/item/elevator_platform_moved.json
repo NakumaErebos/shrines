@@ -1,3 +1,6 @@
 {
-  "parent": "shrines:block/elevator_platform"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "shrines:item/elevator_platform"
+  }
 }

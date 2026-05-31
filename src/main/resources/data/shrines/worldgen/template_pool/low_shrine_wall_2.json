@@ -1,0 +1,15 @@
+{
+  "name": "shrines:low_shrine_wall_2",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "shrines:low_shrine_wall_2",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

@@ -23,7 +23,7 @@ public class GuardianScoutIIAttackGoal extends Goal {
     private int comboStrikesLeft = 0;
     private int shotsLeft = 0;
     private int evadeTimer = 0;
-    private int evadeGracePeriod = 0; // Verhindert sofortigen Abbruch der Flucht
+    private int evadeGracePeriod = 0;
 
     // Animations-Blockaden
     private int damageDelayTimer = -1;
@@ -46,7 +46,7 @@ public class GuardianScoutIIAttackGoal extends Goal {
     public void start() {
         this.currentState = CombatState.APPROACH;
         this.actionDelay = 0;
-        this.lastHealth = this.mob.getHealth(); // Leben beim Start merken
+        this.lastHealth = this.mob.getHealth();
     }
 
     @Override
@@ -85,13 +85,11 @@ public class GuardianScoutIIAttackGoal extends Goal {
                     this.damageDelayTimer = -1;
                 }
             }
-            return; // Blockiert den Rest der KI, solange die Animation läuft
+            return;
         }
 
-        // Blick immer auf den Spieler richten
         this.mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
 
-        // Universeller Cooldown (wird jetzt korrekt nach dem Freeze verarbeitet)
         if (this.actionDelay > 0) {
             this.actionDelay--;
             return;
@@ -101,16 +99,15 @@ public class GuardianScoutIIAttackGoal extends Goal {
 
         // --- 2. STATE MACHINE LOGIK ---
         switch (this.currentState) {
-
             case APPROACH:
-                if (distSq > 256.0D) { // > 16 Blöcke
+                if (distSq > 256.0D) {
                     this.mob.getNavigation().stop();
                     this.shotsLeft = 3;
                     this.currentState = CombatState.SHOOTING;
                     break;
                 }
 
-                if (distSq < 8.0D) { // Nah genug für Combo
+                if (distSq < 8.0D) {
                     this.mob.getNavigation().stop();
                     this.comboStrikesLeft = 1 + this.mob.getRandom().nextInt(3);
                     this.currentState = CombatState.MELEE_COMBO;
@@ -120,17 +117,11 @@ public class GuardianScoutIIAttackGoal extends Goal {
                 break;
 
             case MELEE_COMBO:
-                // Wenn der Spieler während der Combo wegrennt, bricht der Mob NICHT mehr sofort ab,
-                // sondern zieht seine Schläge ins Leere durch (wichtig für deine Änderung!)
                 if (this.comboStrikesLeft > 0) {
                     startMeleeAnimation();
                     this.comboStrikesLeft--;
-
-                    // WICHTIG: Der Cooldown MUSS länger sein als der animationFreezeTimer (15 Ticks),
-                    // sonst überschneiden sich die Angriffe und die State-Machine glitched.
                     this.actionDelay = 18;
                 } else {
-                    // Combo fertig -> Flucht einleiten
                     this.currentState = CombatState.EVADE;
                     this.evadeTimer = 60;
                     Vec3 fleeVec = DefaultRandomPos.getPosAway(this.mob, 15, 7, target.position());
@@ -171,6 +162,7 @@ public class GuardianScoutIIAttackGoal extends Goal {
                 break;
         }
     }
+
     private void startMeleeAnimation() {
         this.mob.triggerAnim("controller", "sword_attack");
         this.damageDelayTimer = 5;
@@ -181,17 +173,23 @@ public class GuardianScoutIIAttackGoal extends Goal {
         // Richtungsvektor zum Ziel
         Vec3 dirToTarget = target.position().subtract(this.mob.position()).normalize();
 
-        // Reichweite der Box vergrößert (inflate auf 4.5D für mehr "Wumms")
-        // Die Box ist nun 9 Blöcke breit (4.5 in jede Richtung vom Zentrum)
+        // Holt alle LivingEntities in der Angriffsbox
         for (LivingEntity entity : this.mob.level().getEntitiesOfClass(LivingEntity.class,
                 this.mob.getBoundingBox().inflate(2.0D, 1.5D, 2.0D))) {
 
             if (entity != this.mob && !this.mob.isAlliedTo(entity)) {
+
+                // --- NEU: Immunschutz für Guardian Scout I und II ---
+                String className = entity.getClass().getSimpleName();
+                if (className.equals("GuardianScoutIMobEntity") || className.equals("GuardianScoutIIMobEntity")) {
+                    continue; // Überspringt diese Entities komplett (kein Schaden, kein Rückstoß)
+                }
+
                 Vec3 toEntity = entity.position().subtract(this.mob.position()).normalize();
 
                 // Der Trefferkegel (Dot-Product):
-                // 0.3D ist ein recht breiter Winkel (ca. 145 Grad vor dem Mob)
                 if (toEntity.dot(dirToTarget) > 0.3D) {
+                    // Verursacht Schaden bei allen ANDEREN Entities (z.B. Spielern)
                     entity.hurt(this.mob.damageSources().mobAttack(this.mob), 8.0F);
                     // Rückstoß weg vom Guardian
                     entity.knockback(0.6D, -dirToTarget.x, -dirToTarget.z);
@@ -199,10 +197,9 @@ public class GuardianScoutIIAttackGoal extends Goal {
             }
         }
 
-        // Partikel-Logik entfernt, nur der Sound bleibt für das Treffer-Feedback
+        // Sound-Feedback abspielen
         if (this.mob.level() instanceof ServerLevel) {
             this.mob.playSound(SoundEvents.PLAYER_ATTACK_SWEEP, 1.0F, 0.7F);
-            // Falls du den Partikel später mal brauchst, einfach hier wieder einfügen.
         }
     }
 

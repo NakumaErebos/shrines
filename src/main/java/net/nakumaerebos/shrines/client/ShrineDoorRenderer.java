@@ -1,6 +1,7 @@
 package net.nakumaerebos.shrines.client;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.nakumaerebos.shrines.block.entity.DungeonDoorBlockEntity;
 import net.nakumaerebos.shrines.block.entity.ShrineDoorBlockEntity;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;

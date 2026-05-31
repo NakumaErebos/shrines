@@ -41,6 +41,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         blockWithItem(ModBlocks.DARKSTONE);
         blockWithItem(ModBlocks.CHISELED_DARKSTONE);
 
+        blockWithOtherModel(ModBlocks.DEEP_DARKNESS_BLOCK, ModBlocks.CHISELED_DARKSTONE);
+        blockWithOtherModel(ModBlocks.CLEAR_EFFECTS_BLOCK, ModBlocks.CHISELED_DARKSTONE);
         blockWithOtherModel(ModBlocks.ELEVATOR, ModBlocks.DARKSTONE);
         blockWithOtherModel(ModBlocks.ELEVATOR_EXIT, ModBlocks.DARKSTONE);
 
@@ -60,6 +62,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         triplePillarBlock(ModBlocks.PILLARED_TRIMMED_DARKSTONE);
 
         sheikahWallBlockWithItemStateZero(ModBlocks.SHEIKAHSTONE_SWIRLS_WALL, ModBlocks.SHEIKAHSTONE_SWIRLS);
+        wallBlockFromBlock(ModBlocks.DARKSTONE_WALL,ModBlocks.DARKSTONE);
     }
 
     private void stairBlockWithItem(DeferredBlock<? extends net.minecraft.world.level.block.StairBlock> block, DeferredBlock<Block> fullBlock) {
@@ -244,13 +247,17 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void sheikahWallBlockWithItemStateZero(DeferredBlock<? extends net.minecraft.world.level.block.WallBlock> block, DeferredBlock<SheikahStateBlock> fullBlock) {
-        // Wir erzwingen hier den Pfad zum State 0 des Full-Blocks
         ResourceLocation texture = modLoc("block/" + fullBlock.getId().getPath() + "_0");
+        wallBlock(block.get(), texture);
+        String path = block.getId().getPath();
+        simpleBlockItem(block.get(), models().wallInventory(path + "_inventory", texture));
+    }
 
-        // Die wallBlock Methode nutzt diese Textur für alle Mauer-Teile (Post, Side, Tall)
+    private void wallBlockFromBlock(DeferredBlock<? extends net.minecraft.world.level.block.WallBlock> block, DeferredBlock<Block> fullBlock) {
+        ResourceLocation texture = modLoc("block/" + fullBlock.getId().getPath());
+
         wallBlock(block.get(), texture);
 
-        // Das Inventar-Item muss ebenfalls explizit auf die State-0 Textur verweisen
         String path = block.getId().getPath();
         simpleBlockItem(block.get(), models().wallInventory(path + "_inventory", texture));
     }

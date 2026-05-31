@@ -1,3 +1,6 @@
 {
-  "parent": "shrines:block/sheikah_lectern"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "shrines:item/sheikah_lectern"
+  }
 }

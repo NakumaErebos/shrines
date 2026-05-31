@@ -25,5 +25,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
         tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(ModBlocks.SHEIKAHSTONE.get());
 
+        tag(BlockTags.WALLS)
+                .add(ModBlocks.SHEIKAHSTONE_SWIRLS_WALL.get())
+                .add(ModBlocks.DARKSTONE_WALL.get());
     }
 }

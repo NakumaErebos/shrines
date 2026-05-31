@@ -20,15 +20,15 @@ public class ModEntities {
 
     public static final DeferredHolder<EntityType<?>, EntityType<GuardianScoutProjectileEntity>> GUARDIANSCOUT_PROJECTILE =
             ENTITIES.register("guardianscout_projectile", () -> EntityType.Builder.<GuardianScoutProjectileEntity>of(GuardianScoutProjectileEntity::new, MobCategory.MISC)
-                    .sized(0.5f, 0.5f) // Ein halber Block ist meist besser für Geschosse
+                    .sized(0.5f, 0.5f)
                     .clientTrackingRange(4)
-                    .updateInterval(20)
+                    .updateInterval(1)
                     .build("guardianscout_projectile"));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<GuardianScoutMobEntity>> GUARDIAN_SCOUT =
-            ENTITIES.register("guardian_scout", () -> EntityType.Builder.of(GuardianScoutMobEntity::new, MobCategory.CREATURE)
+    public static final DeferredHolder<EntityType<?>, EntityType<GuardianScoutIMobEntity>> GUARDIAN_SCOUT_I =
+            ENTITIES.register("guardian_scout_i", () -> EntityType.Builder.of(GuardianScoutIMobEntity::new, MobCategory.CREATURE)
                     .sized(0.6f, 1.8f)
-                    .build("guardian_scout"));
+                    .build("guardian_scout_i"));
 
     // Bei deinen Registern hinzufügen:
     public static final DeferredHolder<EntityType<?>, EntityType<GuardianScoutIIMobEntity>> GUARDIAN_SCOUT_II =
@@ -46,7 +46,7 @@ public class ModEntities {
 
     // Diese Methode verknüpft dein Entity mit den Werten (HP, Speed etc.)
     private static void registerAttributes(EntityAttributeCreationEvent event) {
-        event.put(GUARDIAN_SCOUT.get(), GuardianScoutMobEntity.createAttributes().build());
+        event.put(GUARDIAN_SCOUT_I.get(), GuardianScoutIMobEntity.createAttributes().build());
         event.put(GUARDIAN_SCOUT_II.get(), GuardianScoutIIMobEntity.createAttributes().build());
     }
 }

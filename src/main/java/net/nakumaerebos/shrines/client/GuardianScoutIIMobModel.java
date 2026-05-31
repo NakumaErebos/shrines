@@ -52,7 +52,6 @@ public class GuardianScoutIIMobModel extends GeoModel<GuardianScoutIIMobEntity> 
                     head.setRotY(Mth.lerp(0.05f, head.getRotY(), 0));
                 }
             } else {
-                // Wenn er zusammengefaltet ist, Kopf geschmeidig in Nullstellung zurückdrehen
                 head.setRotY(Mth.lerp(0.1f, head.getRotY(), 0));
             }
         }

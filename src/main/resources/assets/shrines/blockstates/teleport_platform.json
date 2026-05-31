@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "shrines:block/teleport_platform" },
+    "facing=south": { "model": "shrines:block/teleport_platform", "y": 180 },
+    "facing=west": { "model": "shrines:block/teleport_platform", "y": 270 },
+    "facing=east": { "model": "shrines:block/teleport_platform", "y": 90 }
+  }
+}

@@ -6,6 +6,12 @@
   "block.shrines.sheikahstone": "Sheikahstone",
   "block.shrines.dark_sheikahstone": "Dark Sheikahstone",
   "block.shrines.sheikahstone_swirls" :"Sheikahstone Swirls",
-  "block.shrines.starry_darkstone": "Starry Darkstone"
+  "block.shrines.starry_darkstone": "Starry Darkstone",
+
+
+  "container.shrines.shrine_chest": "Shrine Chest",
+
+  "effect.shrines.deep_darkness": "Deep Darkness",
+  "effect.shrines.blue_flames": "Blue Flames"
 
 }

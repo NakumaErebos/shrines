@@ -17,7 +17,7 @@ public class ModTags {
     }
 
     public static class Items {
-        public static final TagKey<Item> EXAMPLE = createTag("example");
+        public static final TagKey<Item> IS_BLUE_FLAME_INFLAMMATORY = createTag("is_blue_flame_inflammatory");
 
         private static TagKey<Item> createTag(String name) {
             return ItemTags.create(ResourceLocation.fromNamespaceAndPath(Shrines.MOD_ID, name));

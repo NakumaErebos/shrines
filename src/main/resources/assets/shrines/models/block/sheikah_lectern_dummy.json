@@ -1,6 +1,0 @@
-{
-  "loader": "neoforge:empty",
-  "textures": {
-    "particle": "shrines:block/sheikah_lectern"
-  }
-}

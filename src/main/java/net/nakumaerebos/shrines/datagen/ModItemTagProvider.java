@@ -21,10 +21,11 @@ public class ModItemTagProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider) {
-        tag(ModTags.Items.EXAMPLE)
-                .add(Items.COAL)
-                .add(Items.STICK)
-                .add(Items.COMPASS);
-
+        tag(ModTags.Items.IS_BLUE_FLAME_INFLAMMATORY)
+                .add(Items.WOODEN_SWORD)
+                .add(Items.WOODEN_AXE)
+                .add(Items.WOODEN_HOE)
+                .add(Items.WOODEN_PICKAXE)
+                .add(Items.WOODEN_SHOVEL);
     }
 }

@@ -12,8 +12,6 @@ public class SheikahLecternRenderer extends GeoBlockRenderer<SheikahLecternBlock
 
     @Override
     public net.minecraft.world.phys.@NotNull AABB getRenderBoundingBox(SheikahLecternBlockEntity animatable) {
-        // Ein Pult ist meist nur 1 Block hoch, aber falls Teile der Animation
-        // leicht überstehen (z.B. das Slate beim Einstecken), nehmen wir ein kleines Padding.
         return new net.minecraft.world.phys.AABB(animatable.getBlockPos()).inflate(1.5);
     }
 }

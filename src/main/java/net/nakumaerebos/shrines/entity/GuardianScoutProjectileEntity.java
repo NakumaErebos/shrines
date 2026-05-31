@@ -89,10 +89,13 @@ public class GuardianScoutProjectileEntity extends Projectile implements GeoEnti
     @Override
     protected void onHitEntity(EntityHitResult result) {
         if (hitTimer == -1) {
+            String className = result.getEntity().getClass().getSimpleName();
+            if (className.equals("GuardianScoutIMobEntity") || className.equals("GuardianScoutIIMobEntity")) {
+                return;
+            }
+
             DamageSource source = this.damageSources().mobProjectile(this, (LivingEntity) this.getOwner());
-
             result.getEntity().hurt(source, 4.0F);
-
             startHitSequence();
         }
     }

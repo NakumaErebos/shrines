@@ -17,13 +17,21 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("shrine_door_be", () -> BlockEntityType.Builder.of(
                     ShrineDoorBlockEntity::new, ModBlocks.SHRINE_DOOR.get()).build(null));
 
+    public static final Supplier<BlockEntityType<DungeonDoorBlockEntity>> DUNGEON_DOOR_BE =
+            BLOCK_ENTITIES.register("dungeon_door_be", () -> BlockEntityType.Builder.of(
+                    DungeonDoorBlockEntity::new, ModBlocks.DUNGEON_DOOR.get()).build(null));
+
     public static final Supplier<BlockEntityType<SheikahLecternBlockEntity>> SHEIKAH_LECTERN_BE =
-            BLOCK_ENTITIES.register("sheikah_lectern_be", () ->
-                    BlockEntityType.Builder.of(
-                            SheikahLecternBlockEntity::new,
-                            ModBlocks.SHEIKAH_LECTERN.get() // Dein Block-Objekt
-                    ).build(null)
-            );
+            BLOCK_ENTITIES.register("sheikah_lectern_be", () -> BlockEntityType.Builder.of(
+                    SheikahLecternBlockEntity::new, ModBlocks.SHEIKAH_LECTERN.get()).build(null));
+
+    public static final Supplier<BlockEntityType<SheikahTorchBlockEntity>> SHEIKAH_TORCH_BE =
+            BLOCK_ENTITIES.register("sheikah_torch_be", () -> BlockEntityType.Builder.of(
+                    SheikahTorchBlockEntity::new, ModBlocks.SHEIKAH_TORCH.get()).build(null));
+
+    public static final Supplier<BlockEntityType<ShrineChestBlockEntity>> SHRINE_CHEST_BE =
+            BLOCK_ENTITIES.register("shrine_chest_be", () -> BlockEntityType.Builder.of(
+                    ShrineChestBlockEntity::new, ModBlocks.SHRINE_CHEST.get()).build(null));
 
     public static final Supplier<BlockEntityType<HolyShimmerEntity>> HOLY_SHIMMER =
             BLOCK_ENTITIES.register("holy_shimmer",

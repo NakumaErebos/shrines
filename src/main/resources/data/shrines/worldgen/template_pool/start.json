@@ -10,6 +10,15 @@
         "location": "shrines:shrine_starter_platform_1",
         "processors": "minecraft:empty"
       }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "projection": "rigid",
+        "location": "shrines:dark_shrine_start",
+        "processors": "minecraft:empty"
+      }
     }
   ]
 }

@@ -2,6 +2,7 @@ package net.nakumaerebos.shrines.client;
 
 import net.minecraft.resources.ResourceLocation;
 import net.nakumaerebos.shrines.Shrines;
+import net.nakumaerebos.shrines.block.entity.DungeonDoorBlockEntity;
 import net.nakumaerebos.shrines.block.entity.ShrineDoorBlockEntity;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
