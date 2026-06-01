@@ -16,7 +16,14 @@ public class ModSounds {
     public static final Supplier<SoundEvent> SHRINE_DOOR_OPEN = registerSoundEvent("shrine_door_open");
     public static final Supplier<SoundEvent> AUTHENTICATION_BING = registerSoundEvent("authentication_bing");
     public static final Supplier<SoundEvent> HOLY_SHIMMER_SHATTER = registerSoundEvent("holy_shimmer_shatter");
+    public static final Supplier<SoundEvent> REMOTE_BOMB_HOLD = registerSoundEvent("remote_bomb_hold");
+    public static final Supplier<SoundEvent> REMOTE_BOMB_EXPLODE = registerSoundEvent("remote_bomb_explode");
+    public static final Supplier<SoundEvent> REMOTE_BOMB_APPEAR = registerSoundEvent("remote_bomb_appear");
     public static final Supplier<SoundEvent> SHRINE_MUSIC = registerSoundEvent("shrine_music");
+    public static final Supplier<SoundEvent> STASIS_END = registerSoundEvent("stasis_end");
+    public static final Supplier<SoundEvent> STASIS_HIT = registerSoundEvent("stasis_hit");
+    public static final Supplier<SoundEvent> STASIS_START = registerSoundEvent("stasis_start");
+    public static final Supplier<SoundEvent> STASIS_TIMER = registerSoundEvent("stasis_timer");
 
 
     private static Supplier<SoundEvent> registerSoundEvent(String name) {

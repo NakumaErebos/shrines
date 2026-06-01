@@ -4,6 +4,7 @@ import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.HugeExplosionParticle;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -17,6 +18,7 @@ import net.nakumaerebos.shrines.client.*;
 import net.nakumaerebos.shrines.client.ShrineInteriorEffects;
 import net.nakumaerebos.shrines.effect.ModEffects;
 import net.nakumaerebos.shrines.entity.ModEntities;
+import net.nakumaerebos.shrines.particles.ModParticles;
 import net.nakumaerebos.shrines.sound.ModSounds;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -54,9 +56,38 @@ public class ShrinesClient {
         event.registerBlockEntityRenderer(ModBlockEntities.SHEIKAH_TORCH_BE.get(), SheikahTorchRenderer::new);
 
         event.registerEntityRenderer(ModEntities.SHRINE_ITEM.get(), ShrineItemRenderer::new);
+        event.registerEntityRenderer(ModEntities.STASIS_EFFECT.get(), StasisEffectRenderer::new);
+        event.registerEntityRenderer(ModEntities.STASIS_ARROW_EFFECT.get(), StasisArrowEffectRenderer::new);
         event.registerEntityRenderer(ModEntities.GUARDIAN_SCOUT_I.get(), GuardianScoutIMobRenderer::new);
         event.registerEntityRenderer(ModEntities.GUARDIAN_SCOUT_II.get(), GuardianScoutIIMobRenderer::new);
         event.registerEntityRenderer(ModEntities.GUARDIANSCOUT_PROJECTILE.get(), GuardianProjectileRenderer::new);
+        event.registerEntityRenderer(ModEntities.REMOTE_BOMB_ROUND.get(), RemoteBombRoundRenderer::new);
+        event.registerEntityRenderer(ModEntities.REMOTE_BOMB_CUBED.get(), RemoteBombCubedRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void registerParticles(RegisterParticleProvidersEvent event) {
+        // Statt dem Standard-Provider nutzen wir eine eigene Lambda-Funktion
+        event.registerSpriteSet(ModParticles.REMOTE_BOMB_EXPLOSION_PARTICLE.get(), spriteSet -> {
+            // Wir erstellen zuerst den originalen Minecraft-Explosions-Provider
+            HugeExplosionParticle.Provider standardProvider = new HugeExplosionParticle.Provider(spriteSet);
+
+            // Wir geben ein modifiziertes Verhalten zurück
+            return (type, level, x, y, z, xSpeed, ySpeed, zSpeed) -> {
+                // Erstelle das originale Partikel-Objekt
+                net.minecraft.client.particle.Particle particle = standardProvider.createParticle(
+                        type, level, x, y, z, xSpeed, ySpeed, zSpeed
+                );
+
+                if (particle != null) {
+                    float groessenFaktor = 3.00F;
+
+                    particle.scale(groessenFaktor);
+                }
+
+                return particle;
+            };
+        });
     }
 
     @SubscribeEvent

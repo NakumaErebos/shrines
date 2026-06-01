@@ -18,12 +18,34 @@ public class ModEntities {
                     .sized(1.0f, 1.0f)
                     .build("shrine_item"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<StasisEffectEntity>> STASIS_EFFECT =
+            ENTITIES.register("stasis_effect", () -> EntityType.Builder.of(StasisEffectEntity::new, MobCategory.MISC)
+                    .sized(1.0f, 1.0f)
+                    .build("stasis_effect"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<StasisArrowEffectEntity>> STASIS_ARROW_EFFECT =
+            ENTITIES.register("stasis_arrow_effect", () -> EntityType.Builder.of(StasisArrowEffectEntity::new, MobCategory.MISC)
+                    .sized(1.0f, 1.0f)
+                    .build("stasis_arrow_effect"));
+
     public static final DeferredHolder<EntityType<?>, EntityType<GuardianScoutProjectileEntity>> GUARDIANSCOUT_PROJECTILE =
             ENTITIES.register("guardianscout_projectile", () -> EntityType.Builder.<GuardianScoutProjectileEntity>of(GuardianScoutProjectileEntity::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(4)
                     .updateInterval(1)
                     .build("guardianscout_projectile"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<RemoteBombRoundEntity>> REMOTE_BOMB_ROUND =
+            ENTITIES.register("remote_bomb_round",
+                    () -> EntityType.Builder.<RemoteBombRoundEntity>of(RemoteBombRoundEntity::new, MobCategory.MISC)
+                            .sized(0.5F, 0.5F)
+                            .build("remote_bomb_round"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<RemoteBombCubedEntity>> REMOTE_BOMB_CUBED =
+            ENTITIES.register("remote_bomb_cubed",
+                    () -> EntityType.Builder.<RemoteBombCubedEntity>of(RemoteBombCubedEntity::new, MobCategory.MISC)
+                            .sized(0.5F, 0.5F)
+                            .build("remote_bomb_cubed"));
 
     public static final DeferredHolder<EntityType<?>, EntityType<GuardianScoutIMobEntity>> GUARDIAN_SCOUT_I =
             ENTITIES.register("guardian_scout_i", () -> EntityType.Builder.of(GuardianScoutIMobEntity::new, MobCategory.CREATURE)
@@ -37,16 +59,15 @@ public class ModEntities {
                     .build("guardian_scout_ii"));
 
 
-
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);
-        // Wir fügen den Listener für die Attribute direkt hier dem Bus hinzu
         eventBus.addListener(ModEntities::registerAttributes);
     }
 
-    // Diese Methode verknüpft dein Entity mit den Werten (HP, Speed etc.)
     private static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(GUARDIAN_SCOUT_I.get(), GuardianScoutIMobEntity.createAttributes().build());
         event.put(GUARDIAN_SCOUT_II.get(), GuardianScoutIIMobEntity.createAttributes().build());
+        event.put(REMOTE_BOMB_ROUND.get(), RemoteBombRoundEntity.createAttributes().build());
+        event.put(REMOTE_BOMB_CUBED.get(), RemoteBombRoundEntity.createAttributes().build());
     }
 }

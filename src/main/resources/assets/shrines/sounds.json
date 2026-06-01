@@ -22,5 +22,47 @@
     "sounds": [
       "shrines:shrine_music"
     ]
+  },
+  "remote_bomb_hold": {
+    "subtitle": "sounds.shrines.remote_bomb_hold",
+    "sounds": [
+      "shrines:remote_bomb_hold"
+    ]
+  },
+  "remote_bomb_explode": {
+    "subtitle": "sounds.shrines.remote_bomb_explode",
+    "sounds": [
+      "shrines:remote_bomb_explode"
+    ]
+  },
+  "remote_bomb_appear": {
+    "subtitle": "sounds.shrines.remote_bomb_appear",
+    "sounds": [
+      "shrines:remote_bomb_appear"
+    ]
+  },
+  "stasis_end": {
+    "subtitle": "sounds.shrines.stasis_end",
+    "sounds": [
+      "shrines:stasis_end"
+    ]
+  },
+  "stasis_hit": {
+    "subtitle": "sounds.shrines.stasis_hit",
+    "sounds": [
+      "shrines:stasis_hit"
+    ]
+  },
+  "stasis_start": {
+    "subtitle": "sounds.shrines.stasis_start",
+    "sounds": [
+      "shrines:stasis_start"
+    ]
+  },
+  "stasis_timer": {
+    "subtitle": "sounds.shrines.stasis_timer",
+    "sounds": [
+      "shrines:stasis_timer"
+    ]
   }
 }

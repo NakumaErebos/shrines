@@ -4,12 +4,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
+import net.nakumaerebos.shrines.attachments.ModAttachments;
 import net.nakumaerebos.shrines.block.ModBlocks;
 import net.nakumaerebos.shrines.block.entity.ModBlockEntities;
 import net.nakumaerebos.shrines.creativeModeTab.ModCreativeModeTabs;
 import net.nakumaerebos.shrines.effect.ModEffects;
 import net.nakumaerebos.shrines.entity.ModEntities;
 import net.nakumaerebos.shrines.item.ModItems;
+import net.nakumaerebos.shrines.particles.ModParticles;
 import net.nakumaerebos.shrines.sound.ModSounds;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -33,6 +35,7 @@ public class Shrines {
     public Shrines(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
 
+        ModParticles.register(modEventBus);
         ModEffects.register(modEventBus);
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
@@ -40,6 +43,7 @@ public class Shrines {
         ModEntities.register(modEventBus);
         ModSounds.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
+        ModAttachments.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
