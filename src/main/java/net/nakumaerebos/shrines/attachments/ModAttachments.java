@@ -13,7 +13,7 @@ public class ModAttachments {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES =
             DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, Shrines.MOD_ID);
 
-    public static final Supplier<AttachmentType<Integer>> FREEZE_TICKS =
+    public static final Supplier<AttachmentType<Integer>> STASIS_TICKS =
             ATTACHMENT_TYPES.register("freeze_ticks", () -> AttachmentType.builder(() -> 0)
                     .serialize(Codec.INT) // Und hier wird der Codec für das Speichern übergeben
                     .build());
@@ -26,6 +26,15 @@ public class ModAttachments {
 
     public static final Supplier<AttachmentType<Float>> LAST_ATTACK_YAW =
             ATTACHMENT_TYPES.register("last_attack_yaw", () -> AttachmentType.builder(() -> 0.0F).serialize(Codec.FLOAT).build());
+
+    public static final Supplier<AttachmentType<Double>> STASIS_X =
+            ATTACHMENT_TYPES.register("stasis_x", () -> AttachmentType.builder(() -> 0.0D).serialize(Codec.DOUBLE).build());
+
+    public static final Supplier<AttachmentType<Double>> STASIS_Y =
+            ATTACHMENT_TYPES.register("stasis_y", () -> AttachmentType.builder(() -> 0.0D).serialize(Codec.DOUBLE).build());
+
+    public static final Supplier<AttachmentType<Double>> STASIS_Z =
+            ATTACHMENT_TYPES.register("stasis_z", () -> AttachmentType.builder(() -> 0.0D).serialize(Codec.DOUBLE).build());
 
     public static void register(IEventBus eventBus) {
         ATTACHMENT_TYPES.register(eventBus);

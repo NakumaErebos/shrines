@@ -18,14 +18,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.nakumaerebos.shrines.attachments.ModAttachments;
-import net.nakumaerebos.shrines.event.FreezeEffectHandler;
+import net.nakumaerebos.shrines.event.StasisEffectHandler;
 import net.nakumaerebos.shrines.sound.ModSounds; // Passe den Importpfad an, falls nötig
 import org.slf4j.Logger;
 
-public class FreezeWandItem extends Item {
+public class SheikahSlateItemStasis extends Item {
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public FreezeWandItem(Properties properties) {
+    public SheikahSlateItemStasis(Properties properties) {
         super(properties);
     }
 
@@ -33,16 +33,16 @@ public class FreezeWandItem extends Item {
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
         if (player.level() instanceof ServerLevel serverLevel) {
             // Wenn das Entity bereits eingefroren ist -> ABBRECHEN
-            if (target.hasData(ModAttachments.FREEZE_TICKS) && target.getData(ModAttachments.FREEZE_TICKS) > 0) {
+            if (target.hasData(ModAttachments.STASIS_TICKS) && target.getData(ModAttachments.STASIS_TICKS) > 0) {
                 LOGGER.info("[FreezeWand] Breche Freeze vorzeitig ab für: {}", target.getType().getDescriptionId());
-                target.setData(ModAttachments.FREEZE_TICKS, 0);
+                target.setData(ModAttachments.STASIS_TICKS, 0);
                 stopStasisTimerSound(serverLevel);
                 return InteractionResult.SUCCESS;
             }
 
             // Ansonsten: Normal einfrieren (Kein Cooldown mehr!)
             LOGGER.info("[FreezeWand] Sende Freeze-Befehl an Handler für: {}", target.getType().getDescriptionId());
-            FreezeEffectHandler.applyFreeze(target, 180);
+            StasisEffectHandler.applyFreeze(target, 180);
         }
         return InteractionResult.sidedSuccess(player.level().isClientSide());
     }
@@ -54,9 +54,9 @@ public class FreezeWandItem extends Item {
 
         if (targetEntity != null && level instanceof ServerLevel serverLevel) {
             // Wenn das Entity (z.B. Boot/Minecart) bereits eingefroren ist -> ABBRECHEN
-            if (targetEntity.hasData(ModAttachments.FREEZE_TICKS) && targetEntity.getData(ModAttachments.FREEZE_TICKS) > 0) {
+            if (targetEntity.hasData(ModAttachments.STASIS_TICKS) && targetEntity.getData(ModAttachments.STASIS_TICKS) > 0) {
                 LOGGER.info("[FreezeWand] Breche Freeze vorzeitig ab für Nicht-Living: {}", targetEntity.getType().getDescriptionId());
-                targetEntity.setData(ModAttachments.FREEZE_TICKS, 0);
+                targetEntity.setData(ModAttachments.STASIS_TICKS, 0);
                 stopStasisTimerSound(serverLevel);
                 return InteractionResultHolder.success(stack);
             }
@@ -64,7 +64,7 @@ public class FreezeWandItem extends Item {
             // Ansonsten: Normal einfrieren, falls es kein LivingEntity ist (da LivingEntity oben abgefangen wird)
             if (!(targetEntity instanceof LivingEntity)) {
                 LOGGER.info("[FreezeWand] Sende Freeze-Befehl für Nicht-Living (z.B. Boot): {}", targetEntity.getType().getDescriptionId());
-                FreezeEffectHandler.applyFreeze(targetEntity, 180);
+                StasisEffectHandler.applyFreeze(targetEntity, 180);
                 return InteractionResultHolder.success(stack);
             }
         }

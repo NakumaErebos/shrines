@@ -3,7 +3,8 @@ package net.nakumaerebos.shrines.item;
 import net.minecraft.world.item.Item;
 import net.nakumaerebos.shrines.Shrines;
 import net.nakumaerebos.shrines.entity.ModEntities;
-import net.nakumaerebos.shrines.item.custom.FreezeWandItem;
+import net.nakumaerebos.shrines.item.custom.SheikahSlateItemCryonis;
+import net.nakumaerebos.shrines.item.custom.SheikahSlateItemStasis;
 import net.nakumaerebos.shrines.item.custom.SheikahSlateItem;
 import net.nakumaerebos.shrines.item.custom.SheikahSlateItemRound;
 import net.neoforged.bus.api.IEventBus;
@@ -16,7 +17,8 @@ public class ModItems {
 
     public static final DeferredItem<SheikahSlateItem> SHEIKAHSLATE = ITEMS.register("sheikahslate", () -> new SheikahSlateItem(new Item.Properties()));
     public static final DeferredItem<SheikahSlateItemRound> SHEIKAHSLATE_ROUND = ITEMS.register("sheikahslate_round", () -> new SheikahSlateItemRound(new Item.Properties()));
-    public static final DeferredItem<FreezeWandItem> SHEIKAHSLATE_STASIS = ITEMS.register("sheikahslate_stasis", () -> new FreezeWandItem(new Item.Properties()));
+    public static final DeferredItem<SheikahSlateItemStasis> SHEIKAHSLATE_STASIS = ITEMS.register("sheikahslate_stasis", () -> new SheikahSlateItemStasis(new Item.Properties()));
+    public static final DeferredItem<SheikahSlateItemCryonis> SHEIKAHSLATE_CRYONIS = ITEMS.register("sheikahslate_cryonis", () -> new SheikahSlateItemCryonis(new Item.Properties()));
     public static final DeferredItem<Item> DUNGEON_KEY = ITEMS.register("dungeon_key", () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<Item> GUARDIAN_SCOUT_SPAWN_EGG =

@@ -15,7 +15,7 @@ import net.nakumaerebos.shrines.attachments.ModAttachments;
 import net.nakumaerebos.shrines.entity.ModEntities;
 import net.nakumaerebos.shrines.entity.StasisArrowEffectEntity;
 import net.nakumaerebos.shrines.entity.StasisEffectEntity;
-import net.nakumaerebos.shrines.item.custom.FreezeWandItem; // Import für dein Item
+import net.nakumaerebos.shrines.item.custom.SheikahSlateItemStasis;
 import net.nakumaerebos.shrines.sound.ModSounds;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -24,20 +24,34 @@ import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
+import java.util.Collections;
+
 @EventBusSubscriber(modid = Shrines.MOD_ID)
-public class FreezeEffectHandler {
+public class StasisEffectHandler {
 
     @SubscribeEvent
     public static void onEntityTick(EntityTickEvent.Pre event) {
         Entity entity = event.getEntity();
 
-        if (!entity.hasData(ModAttachments.FREEZE_TICKS)) return;
+        if (!entity.hasData(ModAttachments.STASIS_TICKS)) return;
 
-        int freezeTicks = entity.getData(ModAttachments.FREEZE_TICKS);
+        int freezeTicks = entity.getData(ModAttachments.STASIS_TICKS);
 
         if (freezeTicks > 0) {
             if (!entity.level().isClientSide) {
-                entity.setPos(entity.xo, entity.yo, entity.zo);
+                // Hol die fest verankerten Startkoordinaten aus den Attachments
+                if (entity.hasData(ModAttachments.STASIS_X) && entity.hasData(ModAttachments.STASIS_Y) && entity.hasData(ModAttachments.STASIS_Z)) {
+                    double targetX = entity.getData(ModAttachments.STASIS_X);
+                    double targetY = entity.getData(ModAttachments.STASIS_Y);
+                    double targetZ = entity.getData(ModAttachments.STASIS_Z);
+
+                    // Spezieller, harter Teleport-Sync für Spieler-Connections gegen Client-Prediction
+                    if (entity instanceof ServerPlayer serverPlayer) {
+                        serverPlayer.connection.teleport(targetX, targetY, targetZ, entity.getYRot(), entity.getXRot(), Collections.emptySet());
+                    } else {
+                        entity.teleportTo(targetX, targetY, targetZ);
+                    }
+                }
                 entity.setDeltaMovement(Vec3.ZERO);
             }
 
@@ -55,8 +69,8 @@ public class FreezeEffectHandler {
                 mob.setNoAi(true);
             }
 
-            if (entity.level() instanceof ServerLevel) {
-                entity.setData(ModAttachments.FREEZE_TICKS, freezeTicks - 1);
+            if (entity.level() instanceof ServerLevel serverLevel) {
+                entity.setData(ModAttachments.STASIS_TICKS, freezeTicks - 1);
             }
 
             if (entity.level().isClientSide && entity.tickCount % 5 == 0) {
@@ -67,6 +81,7 @@ public class FreezeEffectHandler {
                 );
             }
         } else {
+            // AUFWACHEN, SCHADEN & KNOCKBACK ENTLADEN
             if (entity.hasData(ModAttachments.ACCUMULATED_DAMAGE)) {
                 float totalDamage = entity.getData(ModAttachments.ACCUMULATED_DAMAGE);
 
@@ -93,6 +108,7 @@ public class FreezeEffectHandler {
                         entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
                                 ModSounds.STASIS_END.get(), SoundSource.NEUTRAL, 1.0F, 1.2F);
 
+                        // KNOCKBACK ANWENDEN
                         if (entity.hasData(ModAttachments.ACCUMULATED_KNOCKBACK) && entity.hasData(ModAttachments.LAST_ATTACK_YAW)) {
                             float kbStrength = entity.getData(ModAttachments.ACCUMULATED_KNOCKBACK);
                             float attackYaw = entity.getData(ModAttachments.LAST_ATTACK_YAW);
@@ -134,7 +150,7 @@ public class FreezeEffectHandler {
 
         if (target instanceof LivingEntity) return;
 
-        if (target.hasData(ModAttachments.FREEZE_TICKS) && target.getData(ModAttachments.FREEZE_TICKS) > 0) {
+        if (target.hasData(ModAttachments.STASIS_TICKS) && target.getData(ModAttachments.STASIS_TICKS) > 0) {
             float currentAccumulated = target.hasData(ModAttachments.ACCUMULATED_DAMAGE) ? target.getData(ModAttachments.ACCUMULATED_DAMAGE) : 0.0F;
             target.setData(ModAttachments.ACCUMULATED_DAMAGE, currentAccumulated + 1.0F);
 
@@ -178,7 +194,7 @@ public class FreezeEffectHandler {
     public static void onIncomingDamage(LivingIncomingDamageEvent event) {
         LivingEntity target = event.getEntity();
 
-        if (target.hasData(ModAttachments.FREEZE_TICKS) && target.getData(ModAttachments.FREEZE_TICKS) > 0) {
+        if (target.hasData(ModAttachments.STASIS_TICKS) && target.getData(ModAttachments.STASIS_TICKS) > 0) {
             float incomingDamage = event.getAmount();
             float currentAccumulated = target.hasData(ModAttachments.ACCUMULATED_DAMAGE) ? target.getData(ModAttachments.ACCUMULATED_DAMAGE) : 0.0F;
             target.setData(ModAttachments.ACCUMULATED_DAMAGE, currentAccumulated + incomingDamage);
@@ -222,10 +238,8 @@ public class FreezeEffectHandler {
     public static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
         Entity target = event.getTarget();
 
-        if (target.hasData(ModAttachments.FREEZE_TICKS) && target.getData(ModAttachments.FREEZE_TICKS) > 0) {
-            // FIX: Wenn der Spieler den FreezeWand in der Hand hält, brechen wir das Event NICHT ab,
-            // damit interactLivingEntity() im Item gefeuert werden kann!
-            if (event.getItemStack().getItem() instanceof FreezeWandItem) {
+        if (target.hasData(ModAttachments.STASIS_TICKS) && target.getData(ModAttachments.STASIS_TICKS) > 0) {
+            if (event.getItemStack().getItem() instanceof SheikahSlateItemStasis) {
                 return;
             }
             event.setCanceled(true);
@@ -234,7 +248,12 @@ public class FreezeEffectHandler {
 
     public static void applyFreeze(Entity target, int durationInTicks) {
         int finalDuration = 180;
-        target.setData(ModAttachments.FREEZE_TICKS, finalDuration);
+        target.setData(ModAttachments.STASIS_TICKS, finalDuration);
+
+        // HIER NEU: Ursprüngliche Koordinaten unveränderbar im Attachment sichern
+        target.setData(ModAttachments.STASIS_X, target.getX());
+        target.setData(ModAttachments.STASIS_Y, target.getY());
+        target.setData(ModAttachments.STASIS_Z, target.getZ());
 
         if (target.hasData(ModAttachments.ACCUMULATED_DAMAGE)) target.setData(ModAttachments.ACCUMULATED_DAMAGE, 0.0F);
         if (target.hasData(ModAttachments.ACCUMULATED_KNOCKBACK)) target.setData(ModAttachments.ACCUMULATED_KNOCKBACK, 0.0F);

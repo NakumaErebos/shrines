@@ -28,6 +28,13 @@ public class ModEntities {
                     .sized(1.0f, 1.0f)
                     .build("stasis_arrow_effect"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<CryonisPillarEntity>> CRYONIS_PILLAR =
+            ENTITIES.register("cryonis_pillar", () -> EntityType.Builder.<CryonisPillarEntity>of(CryonisPillarEntity::new, MobCategory.MISC)
+                    .sized(2.0f, 3.0f)
+                    .clientTrackingRange(10) // Wie viele Chunks entfernt der Client das Entity sehen kann
+                    .updateInterval(20)      // Wie oft (in Ticks) Positions-Updates gesendet werden (20 Ticks = 1 Sekunde, reicht bei einer festen Säule völlig)
+                    .build("cryonis_pillar"));
+
     public static final DeferredHolder<EntityType<?>, EntityType<GuardianScoutProjectileEntity>> GUARDIANSCOUT_PROJECTILE =
             ENTITIES.register("guardianscout_projectile", () -> EntityType.Builder.<GuardianScoutProjectileEntity>of(GuardianScoutProjectileEntity::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f)

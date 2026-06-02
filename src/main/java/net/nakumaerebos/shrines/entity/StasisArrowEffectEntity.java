@@ -49,7 +49,7 @@ public class StasisArrowEffectEntity extends Entity implements GeoEntity {
 
         // 2. Sicherheitscheck
         if (this.cachedTarget == null || !this.cachedTarget.isAlive() ||
-                !this.cachedTarget.hasData(ModAttachments.FREEZE_TICKS) || this.cachedTarget.getData(ModAttachments.FREEZE_TICKS) <= 0) {
+                !this.cachedTarget.hasData(ModAttachments.STASIS_TICKS) || this.cachedTarget.getData(ModAttachments.STASIS_TICKS) <= 0) {
             if (!this.level().isClientSide) {
                 this.discard();
             }

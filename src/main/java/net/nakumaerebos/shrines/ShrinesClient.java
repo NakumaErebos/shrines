@@ -57,6 +57,7 @@ public class ShrinesClient {
 
         event.registerEntityRenderer(ModEntities.SHRINE_ITEM.get(), ShrineItemRenderer::new);
         event.registerEntityRenderer(ModEntities.STASIS_EFFECT.get(), StasisEffectRenderer::new);
+        event.registerEntityRenderer(ModEntities.CRYONIS_PILLAR.get(), CryonisPillarRenderer::new);
         event.registerEntityRenderer(ModEntities.STASIS_ARROW_EFFECT.get(), StasisArrowEffectRenderer::new);
         event.registerEntityRenderer(ModEntities.GUARDIAN_SCOUT_I.get(), GuardianScoutIMobRenderer::new);
         event.registerEntityRenderer(ModEntities.GUARDIAN_SCOUT_II.get(), GuardianScoutIIMobRenderer::new);

@@ -73,8 +73,8 @@ public class StasisEffectEntity extends Entity implements GeoEntity {
 
         // 4. Logik für das Umschalten der Animationen
         if (!this.level().isClientSide) {
-            if (this.cachedTarget.hasData(ModAttachments.FREEZE_TICKS)) {
-                int remainingTicks = this.cachedTarget.getData(ModAttachments.FREEZE_TICKS);
+            if (this.cachedTarget.hasData(ModAttachments.STASIS_TICKS)) {
+                int remainingTicks = this.cachedTarget.getData(ModAttachments.STASIS_TICKS);
 
                 // Wenn der Freeze vorbei ist, leiten wir das Unfreezing ein
                 if (remainingTicks <= 0 && !this.isUnfreezing) {
