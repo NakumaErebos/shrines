@@ -2,6 +2,7 @@ package net.nakumaerebos.shrines.item.custom;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -20,6 +22,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.nakumaerebos.shrines.entity.CryonisPillarEntity;
 import net.nakumaerebos.shrines.entity.ModEntities;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.List;
@@ -32,11 +35,17 @@ public class SheikahSlateItemCryonis extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
 
+        // 1. ZERSTÖREN-RAYCAST: Geht immer, ignoriert Cooldown komplett und löst ihn nicht aus
         if (tryBreakPillarViaRaycast(player, level)) {
             return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide);
+        }
+
+        // 2. COOLDOWN-CHECK: Wenn der Custom-Timer noch läuft, wird das Erstellen abgebrochen
+        if (hasCooldown(itemstack, level)) {
+            return InteractionResultHolder.fail(itemstack);
         }
 
         BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY);
@@ -63,12 +72,12 @@ public class SheikahSlateItemCryonis extends Item {
 
                             Direction.Axis axis = face.getAxis();
 
-// 1. Alle Achsen standardmäßig perfekt auf die Mitte (+0.5) setzen
+                            // 1. Alle Achsen standardmäßig perfekt auf die Mitte (+0.5) setzen
                             double spawnX = bestSpawnPos.getX() + 0.5;
                             double spawnY = bestSpawnPos.getY() + 0.5;
                             double spawnZ = bestSpawnPos.getZ() + 0.5;
 
-// 2. Die aktive Achse exakt auf die Block-Kante setzen, aus der die Säule kommt
+                            // 2. Die aktive Achse exakt auf die Block-Kante setzen, aus der die Säule kommt
                             if (axis == Direction.Axis.X) {
                                 // Wenn EAST (+1), starten wir bei der hinteren Kante (getX() + 1.0)
                                 // Wenn WEST (-1), starten wir bei der vorderen Kante (getX())
@@ -87,8 +96,6 @@ public class SheikahSlateItemCryonis extends Item {
                             spawnX += face.getStepX() * offset;
                             spawnY += face.getStepY() * offset;
                             spawnZ += face.getStepZ() * offset;
-
-                            pillar.moveTo(spawnX, spawnY, spawnZ, 0.0F, 0.0F);
 
                             pillar.moveTo(spawnX, spawnY, spawnZ, 0.0F, 0.0F);
 
@@ -117,6 +124,9 @@ public class SheikahSlateItemCryonis extends Item {
                                 entity.hurtMarked = true;
                             }
                         }
+
+                        // 3. COOLDOWN STARTEN: Nach erfolgreichem Spawn (1 Sekunde = 20 Ticks)
+                        startCooldown(itemstack, level, 20);
                     }
                     return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide);
                 }
@@ -124,6 +134,43 @@ public class SheikahSlateItemCryonis extends Item {
         }
 
         return InteractionResultHolder.pass(itemstack);
+    }
+
+    private boolean hasCooldown(ItemStack stack, Level level) {
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+        if (customData == null) return false;
+
+        // getUnsafe() liefert das interne CompoundTag zum Lesen
+        CompoundTag nbt = customData.getUnsafe();
+        return level.getGameTime() < nbt.getLong("CryonisCooldownTarget");
+    }
+
+    private void startCooldown(ItemStack stack, Level level, int ticks) {
+        // update() öffnet die CUSTOM_DATA komponente sicher für Schreibzugriffe
+        stack.update(DataComponents.CUSTOM_DATA, CustomData.EMPTY, customData ->
+                customData.update(nbt -> {
+                    nbt.putLong("CryonisCooldownTarget", level.getGameTime() + ticks);
+                    nbt.putInt("CryonisCooldownDuration", ticks);
+                })
+        );
+    }
+
+    public static int getTicksRemaining(ItemStack stack, Level level) {
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+        if (customData == null) return 0;
+
+        CompoundTag nbt = customData.getUnsafe();
+        long target = nbt.getLong("CryonisCooldownTarget");
+        return Math.max(0, (int) (target - level.getGameTime()));
+    }
+
+    public static int getMaxDuration(ItemStack stack) {
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
+        if (customData == null) return 1;
+
+        CompoundTag nbt = customData.getUnsafe();
+        int duration = nbt.getInt("CryonisCooldownDuration");
+        return Math.max(1, duration);
     }
 
     private BlockPos findBestSpawnBlock(Level level, BlockPos center, Vec3 hitVec, Direction face) {
@@ -200,8 +247,8 @@ public class SheikahSlateItemCryonis extends Item {
 
         if (playerPillars.size() >= 3) {
             playerPillars.sort(Comparator.comparingInt(p -> p.getPersistentData().getInt("PillarIndex")));
-            playerPillars.get(0).triggerCryonisBreak();
-            playerPillars.remove(0);
+            playerPillars.getFirst().triggerCryonisBreak();
+            playerPillars.removeFirst();
         }
 
         int nextIndex = 1;

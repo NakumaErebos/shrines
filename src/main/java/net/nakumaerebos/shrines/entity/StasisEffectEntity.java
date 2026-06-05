@@ -76,11 +76,17 @@ public class StasisEffectEntity extends Entity implements GeoEntity {
             if (this.cachedTarget.hasData(ModAttachments.STASIS_TICKS)) {
                 int remainingTicks = this.cachedTarget.getData(ModAttachments.STASIS_TICKS);
 
-                // Wenn der Freeze vorbei ist, leiten wir das Unfreezing ein
                 if (remainingTicks <= 0 && !this.isUnfreezing) {
                     this.isUnfreezing = true;
                     this.unfreezeTimer = UNFREEZE_DURATION_TICKS;
-                    // Erzwinge ein Netzwerk-Update, damit der Client bescheid weiß
+                    this.level().broadcastEntityEvent(this, (byte) 60);
+                }
+            }else if (this.cachedTarget.hasData(ModAttachments.SHORT_STASIS_TICKS)) {
+                int remainingTicks = this.cachedTarget.getData(ModAttachments.SHORT_STASIS_TICKS);
+
+                if (remainingTicks <= 0 && !this.isUnfreezing) {
+                    this.isUnfreezing = true;
+                    this.unfreezeTimer = UNFREEZE_DURATION_TICKS;
                     this.level().broadcastEntityEvent(this, (byte) 60);
                 }
             }

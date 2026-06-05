@@ -1,8 +1,10 @@
 package net.nakumaerebos.shrines;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.HugeExplosionParticle;
 import net.minecraft.client.renderer.FogRenderer;
@@ -14,8 +16,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.nakumaerebos.shrines.block.entity.ModBlockEntities;
-import net.nakumaerebos.shrines.client.*;
 import net.nakumaerebos.shrines.client.ShrineInteriorEffects;
+import net.nakumaerebos.shrines.client.gui.CryonisTimerOverlay;
+import net.nakumaerebos.shrines.client.keys.ClientInputHandler;
+import net.nakumaerebos.shrines.client.keys.ModKeyMappings;
+import net.nakumaerebos.shrines.client.renderer.*;
 import net.nakumaerebos.shrines.effect.ModEffects;
 import net.nakumaerebos.shrines.entity.ModEntities;
 import net.nakumaerebos.shrines.particles.ModParticles;
@@ -29,7 +34,9 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Matrix4f;
+import org.lwjgl.glfw.GLFW;
 
 // This class will not load on dedicated servers. Accessing client side code from here is safe.
 @Mod(value = Shrines.MOD_ID, dist = Dist.CLIENT)
@@ -64,6 +71,21 @@ public class ShrinesClient {
         event.registerEntityRenderer(ModEntities.GUARDIANSCOUT_PROJECTILE.get(), GuardianProjectileRenderer::new);
         event.registerEntityRenderer(ModEntities.REMOTE_BOMB_ROUND.get(), RemoteBombRoundRenderer::new);
         event.registerEntityRenderer(ModEntities.REMOTE_BOMB_CUBED.get(), RemoteBombCubedRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        ModKeyMappings.registerKeyMappings(event);
+    }
+
+    @SubscribeEvent
+    public static void onRenderGui(RenderGuiLayerEvent.Post event){
+        CryonisTimerOverlay.onRenderGui(event);
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event) {
+        ClientInputHandler.onClientTick(event);
     }
 
     @SubscribeEvent

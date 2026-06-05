@@ -9,6 +9,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.nakumaerebos.shrines.Shrines;
 import net.nakumaerebos.shrines.attachments.ModAttachments;
@@ -34,18 +35,16 @@ public class StasisEffectHandler {
         Entity entity = event.getEntity();
 
         if (!entity.hasData(ModAttachments.STASIS_TICKS)) return;
-
         int freezeTicks = entity.getData(ModAttachments.STASIS_TICKS);
+        if (freezeTicks < 0) return;
 
         if (freezeTicks > 0) {
             if (!entity.level().isClientSide) {
-                // Hol die fest verankerten Startkoordinaten aus den Attachments
                 if (entity.hasData(ModAttachments.STASIS_X) && entity.hasData(ModAttachments.STASIS_Y) && entity.hasData(ModAttachments.STASIS_Z)) {
                     double targetX = entity.getData(ModAttachments.STASIS_X);
                     double targetY = entity.getData(ModAttachments.STASIS_Y);
                     double targetZ = entity.getData(ModAttachments.STASIS_Z);
 
-                    // Spezieller, harter Teleport-Sync für Spieler-Connections gegen Client-Prediction
                     if (entity instanceof ServerPlayer serverPlayer) {
                         serverPlayer.connection.teleport(targetX, targetY, targetZ, entity.getYRot(), entity.getXRot(), Collections.emptySet());
                     } else {
@@ -81,56 +80,70 @@ public class StasisEffectHandler {
                 );
             }
         } else {
-            // AUFWACHEN, SCHADEN & KNOCKBACK ENTLADEN
-            if (entity.hasData(ModAttachments.ACCUMULATED_DAMAGE)) {
-                float totalDamage = entity.getData(ModAttachments.ACCUMULATED_DAMAGE);
+            // Effekt beenden (Verhindert Loop)
+            entity.setData(ModAttachments.STASIS_TICKS, -1);
 
-                if (!entity.level().isClientSide) {
-                    entity.setGlowingTag(false);
-                    net.minecraft.world.scores.Scoreboard scoreboard = entity.level().getScoreboard();
-                    net.minecraft.world.scores.PlayerTeam team = scoreboard.getPlayerTeam("stasis_yellow");
-                    if (team != null && scoreboard.getPlayersTeam(entity.getScoreboardName()) == team) {
-                        scoreboard.removePlayerFromTeam(entity.getScoreboardName(), team);
-                    }
+            // FIX: Schaden auslesen, auch wenn das Attachment noch nie existiert hat (Fallbacks auf 0.0F)
+            float totalDamage = entity.hasData(ModAttachments.ACCUMULATED_DAMAGE) ? entity.getData(ModAttachments.ACCUMULATED_DAMAGE) : 0.0F;
 
-                    if (entity.level() instanceof ServerLevel serverLevel) {
-                        ClientboundStopSoundPacket stopPacket = new ClientboundStopSoundPacket(ModSounds.STASIS_TIMER.get().getLocation(), SoundSource.NEUTRAL);
-                        for (ServerPlayer player : serverLevel.players()) {
-                            player.connection.send(stopPacket);
-                        }
-                    }
+            if (!entity.level().isClientSide) {
+                entity.setGlowingTag(false);
+                net.minecraft.world.scores.Scoreboard scoreboard = entity.level().getScoreboard();
+                net.minecraft.world.scores.PlayerTeam team = scoreboard.getPlayerTeam("stasis_yellow");
+                if (team != null && scoreboard.getPlayersTeam(entity.getScoreboardName()) == team) {
+                    scoreboard.removePlayerFromTeam(entity.getScoreboardName(), team);
                 }
 
-                if (totalDamage > 0.0F) {
-                    if (!entity.level().isClientSide) {
-                        entity.hurt(entity.damageSources().generic(), totalDamage);
-
-                        entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
-                                ModSounds.STASIS_END.get(), SoundSource.NEUTRAL, 1.0F, 1.2F);
-
-                        // KNOCKBACK ANWENDEN
-                        if (entity.hasData(ModAttachments.ACCUMULATED_KNOCKBACK) && entity.hasData(ModAttachments.LAST_ATTACK_YAW)) {
-                            float kbStrength = entity.getData(ModAttachments.ACCUMULATED_KNOCKBACK);
-                            float attackYaw = entity.getData(ModAttachments.LAST_ATTACK_YAW);
-
-                            if (kbStrength > 0.0F) {
-                                double motionX = -Mth.sin(attackYaw * (float)Math.PI / 180.0F);
-                                double motionZ = Mth.cos(attackYaw * (float)Math.PI / 180.0F);
-
-                                Vec3 lookVector = new Vec3(motionX, 0, motionZ).normalize().scale(kbStrength);
-                                double upWardForce = (entity instanceof LivingEntity) ? (0.4F + (kbStrength * 0.1F)) : 0.2F;
-
-                                entity.setDeltaMovement(new Vec3(lookVector.x, upWardForce, lookVector.z));
-                                entity.hasImpulse = true;
-                            }
-                        }
+                if (entity.level() instanceof ServerLevel serverLevel) {
+                    ClientboundStopSoundPacket stopPacket = new ClientboundStopSoundPacket(ModSounds.STASIS_TIMER.get().getLocation(), SoundSource.NEUTRAL);
+                    for (ServerPlayer player : serverLevel.players()) {
+                        player.connection.send(stopPacket);
                     }
 
-                    entity.setData(ModAttachments.ACCUMULATED_DAMAGE, 0.0F);
-                    entity.setData(ModAttachments.ACCUMULATED_KNOCKBACK, 0.0F);
-                    entity.setData(ModAttachments.LAST_ATTACK_YAW, 0.0F);
+                    // FIX: Spielt jetzt IMMER ab, da totalDamage garantiert initialisiert ist!
+                    if (totalDamage <= 0.0F) {
+                        serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                                ModSounds.STASIS_END_1.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
+                    } else if (totalDamage <= 20.0F) {
+                        serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                                ModSounds.STASIS_END_2.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
+                    } else {
+                        serverLevel.playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                                ModSounds.STASIS_END_3.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
+                    }
                 }
             }
+
+            if (totalDamage > 0.0F) {
+                if (!entity.level().isClientSide) {
+                    entity.hurt(entity.damageSources().generic(), totalDamage);
+
+                    entity.level().playSound(null, entity.getX(), entity.getY(), entity.getZ(),
+                            ModSounds.STASIS_END_1.get(), SoundSource.NEUTRAL, 1.0F, 1.2F);
+
+                    // KNOCKBACK ANWENDEN
+                    if (entity.hasData(ModAttachments.ACCUMULATED_KNOCKBACK) && entity.hasData(ModAttachments.LAST_ATTACK_YAW)) {
+                        float kbStrength = entity.getData(ModAttachments.ACCUMULATED_KNOCKBACK);
+                        float attackYaw = entity.getData(ModAttachments.LAST_ATTACK_YAW);
+
+                        if (kbStrength > 0.0F) {
+                            double motionX = -Mth.sin(attackYaw * (float)Math.PI / 180.0F);
+                            double motionZ = Mth.cos(attackYaw * (float)Math.PI / 180.0F);
+
+                            Vec3 lookVector = new Vec3(motionX, 0, motionZ).normalize().scale(kbStrength);
+                            double upWardForce = (entity instanceof LivingEntity) ? (0.4F + (kbStrength * 0.1F)) : 0.2F;
+
+                            entity.setDeltaMovement(new Vec3(lookVector.x, upWardForce, lookVector.z));
+                            entity.hasImpulse = true;
+                        }
+                    }
+                }
+            }
+
+            // Sicheres Zurücksetzen aller Werte für den nächsten Stasis-Einsatz
+            entity.setData(ModAttachments.ACCUMULATED_DAMAGE, 0.0F);
+            entity.setData(ModAttachments.ACCUMULATED_KNOCKBACK, 0.0F);
+            entity.setData(ModAttachments.LAST_ATTACK_YAW, 0.0F);
 
             if (entity instanceof LivingEntity living) {
                 if (living instanceof Mob mob && mob.isNoAi()) {
@@ -182,7 +195,7 @@ public class StasisEffectHandler {
                 float dynamicPitch = 0.5F + (currentKb * 0.3F);
                 if (dynamicPitch > 2.0F) dynamicPitch = 2.0F;
 
-                target.level().playSound(null, target.getX(), target.getY(), target.getZ(),
+                serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(),
                         ModSounds.STASIS_HIT.get(), SoundSource.NEUTRAL, 0.4F, dynamicPitch);
             }
 
@@ -226,7 +239,7 @@ public class StasisEffectHandler {
                 float dynamicPitch = 0.5F + (currentKb * 0.3F);
                 if (dynamicPitch > 2.0F) dynamicPitch = 2.0F;
 
-                target.level().playSound(null, target.getX(), target.getY(), target.getZ(),
+                serverLevel.playSound(null, target.getX(), target.getY(), target.getZ(),
                         ModSounds.STASIS_HIT.get(), SoundSource.NEUTRAL, 0.6F, dynamicPitch);
             }
 
@@ -246,25 +259,22 @@ public class StasisEffectHandler {
         }
     }
 
-    public static void applyFreeze(Entity target, int durationInTicks) {
-        int finalDuration = 180;
-        target.setData(ModAttachments.STASIS_TICKS, finalDuration);
+    public static void applyFreeze(Entity target, int durationInTicks, Player player) {
+        target.setData(ModAttachments.ACCUMULATED_DAMAGE, 0.0F);
+        target.setData(ModAttachments.ACCUMULATED_KNOCKBACK, 0.0F);
+        target.setData(ModAttachments.LAST_ATTACK_YAW, 0.0F);
 
-        // HIER NEU: Ursprüngliche Koordinaten unveränderbar im Attachment sichern
+        target.setData(ModAttachments.STASIS_TICKS, durationInTicks);
+        target.setData(ModAttachments.STASIS_CASTER, player.getUUID());
+
         target.setData(ModAttachments.STASIS_X, target.getX());
         target.setData(ModAttachments.STASIS_Y, target.getY());
         target.setData(ModAttachments.STASIS_Z, target.getZ());
 
-        if (target.hasData(ModAttachments.ACCUMULATED_DAMAGE)) target.setData(ModAttachments.ACCUMULATED_DAMAGE, 0.0F);
-        if (target.hasData(ModAttachments.ACCUMULATED_KNOCKBACK)) target.setData(ModAttachments.ACCUMULATED_KNOCKBACK, 0.0F);
-        if (target.hasData(ModAttachments.LAST_ATTACK_YAW)) target.setData(ModAttachments.LAST_ATTACK_YAW, 0.0F);
-
         target.ejectPassengers();
 
-        target.level().playSound(null, target.getX(), target.getY(), target.getZ(),
-                ModSounds.STASIS_START.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
-        target.level().playSound(null, target.getX(), target.getY(), target.getZ(),
-                ModSounds.STASIS_TIMER.get(), SoundSource.NEUTRAL, 1.0F, 1.0F);
+        target.playSound(ModSounds.STASIS_START.get(), 1.0F, 1.0F);
+        target.playSound(ModSounds.STASIS_TIMER.get(), 1.0F, 1.0F);
 
         if (target instanceof LivingEntity living) {
             living.setSilent(true);

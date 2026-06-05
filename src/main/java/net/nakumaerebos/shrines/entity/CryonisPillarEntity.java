@@ -6,12 +6,12 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.nakumaerebos.shrines.sound.ModSounds;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -152,12 +152,11 @@ public class CryonisPillarEntity extends Entity implements GeoEntity {
     }
 
     private void playGrowEffects() {
-        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.BUCKET_FILL_POWDER_SNOW, SoundSource.BLOCKS, 1.5F, 0.6F);
-        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.BUCKET_EMPTY_POWDER_SNOW, SoundSource.BLOCKS, 1.0F, 1.0F);
+        this.level().playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.GROW_CRYONIS_PILLAR.get(), SoundSource.BLOCKS, 1.5F, 1.0F);
 
         if (this.level() instanceof ServerLevel serverLevel) {
-            serverLevel.sendParticles(ParticleTypes.SPLASH, this.getX(), this.getY(), this.getZ(), 50, 0.8, 0.8, 0.8, 0.1);
-            serverLevel.sendParticles(ParticleTypes.SNOWFLAKE, this.getX(), this.getY(), this.getZ(), 30, 0.8, 0.8, 0.8, 0.05);
+            serverLevel.sendParticles(ParticleTypes.SPLASH, this.getX(), this.getY(), this.getZ(), 100, 0.8, 0.8, 0.8, 0.1);
+            serverLevel.sendParticles(ParticleTypes.SNOWFLAKE, this.getX(), this.getY(), this.getZ(), 60, 0.8, 0.8, 0.8, 0.05);
         }
     }
 
@@ -206,9 +205,9 @@ public class CryonisPillarEntity extends Entity implements GeoEntity {
             this.getPersistentData().remove("OwnerUUID");
         }
         if (!this.level().isClientSide) {
-            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GLASS_BREAK, SoundSource.BLOCKS, 1.0F, 0.8F);
+            this.level().playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.BREAK_CRYONIS_PILLAR.get(), SoundSource.BLOCKS, 2.0F, 1.0F);
             if (this.level() instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(ParticleTypes.SNOWFLAKE, this.getX(), this.getY(), this.getZ(), 40, 0.8, 0.8, 0.8, 0.1);
+                serverLevel.sendParticles(ParticleTypes.SNOWFLAKE, this.getX(), this.getY(), this.getZ(), 80, 0.8, 0.8, 0.8, 0.1);
             }
         }
     }

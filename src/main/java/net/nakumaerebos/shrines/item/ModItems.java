@@ -3,10 +3,7 @@ package net.nakumaerebos.shrines.item;
 import net.minecraft.world.item.Item;
 import net.nakumaerebos.shrines.Shrines;
 import net.nakumaerebos.shrines.entity.ModEntities;
-import net.nakumaerebos.shrines.item.custom.SheikahSlateItemCryonis;
-import net.nakumaerebos.shrines.item.custom.SheikahSlateItemStasis;
-import net.nakumaerebos.shrines.item.custom.SheikahSlateItem;
-import net.nakumaerebos.shrines.item.custom.SheikahSlateItemRound;
+import net.nakumaerebos.shrines.item.custom.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -15,10 +12,11 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(Shrines.MOD_ID);
 
-    public static final DeferredItem<SheikahSlateItem> SHEIKAHSLATE = ITEMS.register("sheikahslate", () -> new SheikahSlateItem(new Item.Properties()));
-    public static final DeferredItem<SheikahSlateItemRound> SHEIKAHSLATE_ROUND = ITEMS.register("sheikahslate_round", () -> new SheikahSlateItemRound(new Item.Properties()));
+    public static final DeferredItem<SheikahSlateItemRemoteBombSquare> SHEIKAHSLATE = ITEMS.register("sheikahslate", () -> new SheikahSlateItemRemoteBombSquare(new Item.Properties()));
+    public static final DeferredItem<SheikahSlateItemRemoteBombRound> SHEIKAHSLATE_ROUND = ITEMS.register("sheikahslate_round", () -> new SheikahSlateItemRemoteBombRound(new Item.Properties()));
     public static final DeferredItem<SheikahSlateItemStasis> SHEIKAHSLATE_STASIS = ITEMS.register("sheikahslate_stasis", () -> new SheikahSlateItemStasis(new Item.Properties()));
     public static final DeferredItem<SheikahSlateItemCryonis> SHEIKAHSLATE_CRYONIS = ITEMS.register("sheikahslate_cryonis", () -> new SheikahSlateItemCryonis(new Item.Properties()));
+    public static final DeferredItem<SheikahSlateItemMagnesis> SHEIKAHSLATE_MAGNESIS = ITEMS.register("sheikahslate_magnesis", () -> new SheikahSlateItemMagnesis(new Item.Properties()));
     public static final DeferredItem<Item> DUNGEON_KEY = ITEMS.register("dungeon_key", () -> new Item(new Item.Properties()));
 
     public static final DeferredItem<Item> GUARDIAN_SCOUT_SPAWN_EGG =

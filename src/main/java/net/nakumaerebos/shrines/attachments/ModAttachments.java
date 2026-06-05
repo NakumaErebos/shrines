@@ -7,14 +7,25 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
+import java.util.UUID;
 import java.util.function.Supplier;
 
 public class ModAttachments {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES =
             DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, Shrines.MOD_ID);
 
+    public static final Supplier<AttachmentType<UUID>> STASIS_CASTER =
+            ATTACHMENT_TYPES.register("stasis_caster", () -> AttachmentType.builder(UUID::randomUUID)
+                    .serialize(net.minecraft.core.UUIDUtil.CODEC) // Codec für das Speichern der UUID
+                    .build());
+
     public static final Supplier<AttachmentType<Integer>> STASIS_TICKS =
-            ATTACHMENT_TYPES.register("freeze_ticks", () -> AttachmentType.builder(() -> 0)
+            ATTACHMENT_TYPES.register("stasis_ticks", () -> AttachmentType.builder(() -> 0)
+                    .serialize(Codec.INT) // Und hier wird der Codec für das Speichern übergeben
+                    .build());
+
+    public static final Supplier<AttachmentType<Integer>> SHORT_STASIS_TICKS =
+            ATTACHMENT_TYPES.register("short_stasis_ticks", () -> AttachmentType.builder(() -> 0)
                     .serialize(Codec.INT) // Und hier wird der Codec für das Speichern übergeben
                     .build());
 

@@ -11,6 +11,7 @@ import net.nakumaerebos.shrines.creativeModeTab.ModCreativeModeTabs;
 import net.nakumaerebos.shrines.effect.ModEffects;
 import net.nakumaerebos.shrines.entity.ModEntities;
 import net.nakumaerebos.shrines.item.ModItems;
+import net.nakumaerebos.shrines.network.ModNetworking;
 import net.nakumaerebos.shrines.particles.ModParticles;
 import net.nakumaerebos.shrines.sound.ModSounds;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -34,6 +35,8 @@ public class Shrines {
 
     public Shrines(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
+
+        modEventBus.addListener(ModNetworking::registerPayloads);
 
         ModParticles.register(modEventBus);
         ModEffects.register(modEventBus);

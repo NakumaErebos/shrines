@@ -12,6 +12,9 @@
   "container.shrines.shrine_chest": "Shrine Chest",
 
   "effect.shrines.deep_darkness": "Deep Darkness",
-  "effect.shrines.blue_flames": "Blue Flames"
+  "effect.shrines.blue_flames": "Blue Flames",
+  "key.shrines.magnesis_pull": "(Magnesis) Pull",
+  "key.categories.shrines": "BOTW Shrines",
+  "key.shrines.magnesis_push": "(Magnesis) Push"
 
 }

@@ -41,10 +41,22 @@
       "shrines:remote_bomb_appear"
     ]
   },
-  "stasis_end": {
-    "subtitle": "sounds.shrines.stasis_end",
+  "stasis_end_1": {
+    "subtitle": "sounds.shrines.stasis_end_1",
     "sounds": [
-      "shrines:stasis_end"
+      "shrines:stasis_end_1"
+    ]
+  },
+  "stasis_end_2": {
+    "subtitle": "sounds.shrines.stasis_end_2",
+    "sounds": [
+      "shrines:stasis_end_2"
+    ]
+  },
+  "stasis_end_3": {
+    "subtitle": "sounds.shrines.stasis_end_3",
+    "sounds": [
+      "shrines:stasis_end_3"
     ]
   },
   "stasis_hit": {
@@ -63,6 +75,48 @@
     "subtitle": "sounds.shrines.stasis_timer",
     "sounds": [
       "shrines:stasis_timer"
+    ]
+  },
+  "stasis_timer_short": {
+    "subtitle": "sounds.shrines.stasis_timer_short",
+    "sounds": [
+      "shrines:stasis_timer_short"
+    ]
+  },
+  "stasis_timer_very_short": {
+    "subtitle": "sounds.shrines.stasis_timer_very_short",
+    "sounds": [
+      "shrines:stasis_timer_very_short"
+    ]
+  },
+  "break_cryonis_pillar": {
+    "subtitle": "sounds.shrines.break_cryonis_pillar",
+    "sounds": [
+      "shrines:break_cryonis_pillar"
+    ]
+  },
+  "grow_cryonis_pillar": {
+    "subtitle": "sounds.shrines.grow_cryonis_pillar",
+    "sounds": [
+      "shrines:grow_cryonis_pillar"
+    ]
+  },
+  "magnesis_catch": {
+    "subtitle": "sounds.shrines.magnesis_catch",
+    "sounds": [
+      "shrines:magnesis_catch"
+    ]
+  },
+  "magnesis_loop": {
+    "subtitle": "sounds.shrines.magnesis_loop",
+    "sounds": [
+      "shrines:magnesis_loop"
+    ]
+  },
+  "magnesis_release": {
+    "subtitle": "sounds.shrines.magnesis_release",
+    "sounds": [
+      "shrines:magnesis_release"
     ]
   }
 }
